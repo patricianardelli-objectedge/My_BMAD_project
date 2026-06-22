@@ -1,0 +1,30 @@
+{
+  "age_patterns": [
+    {"pattern": "\\bunder\\s*12\\b", "type": "under-12"},
+    {"pattern": "\\b(\\d{1,2})(?:\\s*years?\\s*old)?\\b", "type": "age_number"}
+  ],
+  "recipient_keywords": {
+    "friend": ["friend", "mate"],
+    "son": ["son", "boy", "child", "kid"],
+    "daughter": ["daughter", "girl"],
+    "grandparent": ["grandfather", "grandmother", "grandpa", "grandma", "granddad"],
+    "parent": ["father", "mother", "dad", "mom", "parent"],
+    "self": ["myself", "me"]
+  },
+  "genre_keywords": {
+    "horror": ["horror", "spooky", "scary"],
+    "children": ["dinosaur", "dinosaurs", "kids", "children"],
+    "history": ["history", "historical"],
+    "politics": ["politics", "political"],
+    "romance": ["romance", "romantic", "love"],
+    "thriller": ["thriller", "suspense", "mystery"],
+    "self_help": ["self[- ]help", "selfhelp", "personal development", "motivational"]
+  },
+  "avoid_keywords": ["explicit", "sex", "violence"],
+  "positive_verbs": ["like", "likes", "love", "loves", "enjoy", "enjoys", "fond of"],
+  "surprise_level_keywords": {
+    "light_hint": ["hint", "light"],
+    "moderate": ["moderate", "some hints"],
+    "full": ["full surprise", "full", "no hints", "surprise me"]
+  }
+}

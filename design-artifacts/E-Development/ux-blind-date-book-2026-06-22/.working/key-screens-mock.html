@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Date Book — UX Design Mock</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1B4D3E;
+            --secondary: #0F3A5F;
+            --accent: #D4AF37;
+            --light: #F8F7F5;
+            --dark: #1A1A1A;
+            --border-sm: 8px;
+            --border-md: 12px;
+            --border-lg: 16px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 48px;
+            margin-bottom: 16px;
+            line-height: 1.3;
+        }
+
+        h2 {
+            font-family: Georgia, serif;
+            font-size: 32px;
+            margin-top: 48px;
+            margin-bottom: 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Header */
+        header {
+            background: var(--light);
+            padding: 16px 0;
+            border-bottom: 1px solid #e0dcd8;
+            sticky: top;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: Georgia, serif;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .cart-badge {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 80px 16px;
+            text-align: center;
+            margin-bottom: 48px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '🎁';
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            font-size: 120px;
+            opacity: 0.1;
+        }
+
+        .hero h1 {
+            color: white;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 32px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-video-placeholder {
+            background: rgba(255, 255, 255, 0.2);
+            height: 300px;
+            border-radius: var(--border-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin-top: 32px;
+        }
+
+        /* Story Cards */
+        .story-section {
+            margin-bottom: 64px;
+        }
+
+        .story-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .story-card {
+            background: white;
+            border-radius: var(--border-md);
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .story-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .story-card-image {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #c084fc 0%, #7c3aed 100%);
+            display: flex;
+            align-items: flex-end;
+        }
+
+        .story-card-overlay {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(rgba(27, 77, 62, 0.6), rgba(27, 77, 62, 0.8));
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 24px;
+            color: white;
+        }
+
+        .story-card-title {
+            font-family: Georgia, serif;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .story-card-cta {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: var(--border-sm);
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #153a2d;
+        }
+
+        .btn-primary:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .btn-secondary {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            color: var(--dark);
+        }
+
+        .btn-accent:hover {
+            background: #c99c27;
+        }
+
+        /* Agent Modal */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: var(--border-lg);
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: var(--primary);
+            color: white;
+            padding: 24px;
+            border-radius: var(--border-lg) var(--border-lg) 0 0;
+        }
+
+        .modal-header h2 {
+            font-family: Georgia, serif;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .chat-history {
+            margin-bottom: 24px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .chat-turn {
+            margin-bottom: 16px;
+        }
+
+        .chat-question {
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-family: Georgia, serif;
+        }
+
+        .chat-answer {
+            color: var(--dark);
+            padding: 8px 0;
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--secondary);
+            border-radius: var(--border-sm);
+            font-size: 16px;
+            margin-bottom: 16px;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            border-top: 1px solid #e0dcd8;
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-footer .btn {
+            flex: 1;
+        }
+
+        .skip-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            margin-top: 12px;
+            display: block;
+        }
+
+        /* Mini Cart */
+        .mini-cart {
+            position: fixed;
+            right: -360px;
+            top: 0;
+            width: 360px;
+            height: 100vh;
+            background: white;
+            box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+            transition: right 0.3s ease;
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mini-cart.show {
+            right: 0;
+        }
+
+        .mini-cart-header {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mini-cart-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .mini-cart-content {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            background: var(--light);
+            padding: 12px;
+            border-radius: var(--border-sm);
+            margin-bottom: 12px;
+        }
+
+        .cart-item-title {
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .subscription-options {
+            margin: 24px 0;
+            padding: 16px;
+            background: var(--light);
+            border-radius: var(--border-sm);
+        }
+
+        .subscription-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .radio-option input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .mini-cart-footer {
+            padding: 16px;
+            border-top: 1px solid #e0dcd8;
+        }
+
+        .mini-cart-total {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+
+        .mini-cart-total span {
+            color: var(--primary);
+        }
+
+        .demo-nav {
+            background: var(--secondary);
+            padding: 16px;
+            text-align: center;
+            color: white;
+        }
+
+        .demo-nav button {
+            background: var(--accent);
+            color: var(--dark);
+            padding: 8px 16px;
+            margin: 0 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .screen-label {
+            background: var(--secondary);
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .story-cards {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 32px;
+            }
+
+            .mini-cart {
+                width: 100%;
+                right: -100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-nav">
+        <button onclick="showScreen('homepage')">Homepage</button>
+        <button onclick="showScreen('agent')">Agent Modal</button>
+        <button onclick="showScreen('minicart')">Mini Cart</button>
+    </div>
+
+    <!-- HOMEPAGE SCREEN -->
+    <div id="homepage-screen" class="screen">
+        <header>
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">📖 Blind Date Book</div>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="openMiniCart()">Cart</button>
+                        <span class="cart-badge" id="cart-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="hero">
+            <div class="container">
+                <h1>The Gift That Surprises</h1>
+                <p>Curated book selections tailored to your mood. Unboxing ritual included.</p>
+                <div class="hero-video-placeholder">
+                    <!-- Embedding may be blocked; clickable thumbnail opens YouTube -->
+                    <a href="https://www.youtube.com/watch?v=gPGTI56o54U" target="_blank" rel="noopener noreferrer" style="display:block;position:relative;">
+                        <img src="https://img.youtube.com/vi/gPGTI56o54U/maxresdefault.jpg" alt="Unboxing video thumbnail" style="width:100%;height:260px;object-fit:cover;border-radius:12px;display:block;" />
+                        <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:56px;color:rgba(255,255,255,0.95);text-shadow:0 4px 12px rgba(0,0,0,0.6)">▶</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container story-section">
+            <h2>Choose Your Mood</h2>
+            <div class="story-cards">
+                <div class="story-card" onclick="addToCart('Cozy Mystery')">
+                    <div class="story-card-image">
+                        <div class="story-card-overlay">
+                            <div class="story-card-blurb">A married couple's life is thrown into chaos when one spouse suddenly vanishes. Hidden resentments, deception, and competing narratives emerge as the investigation reveals that neither person is quite who they seem.</div>
+                            <div class="story-card-title">Cozy Mystery</div>
+                            <a href="#" class="story-card-cta">Choose this gift →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-card" onclick="addToCart('Literary Romance')">
+                    <div class="story-card-image">
+                        <div class="story-card-overlay">
+                            <div class="story-card-blurb">A struggling woman takes a job that could change her life, only to find herself entangled with a powerful, enigmatic businessman. Attraction, hidden motives, and difficult choices force both to confront secrets that could unravel everything.</div>
+                            <div class="story-card-title">Literary Romance</div>
+                            <a href="#" class="story-card-cta">Choose this gift →</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="story-card" onclick="addToCart('Epic Adventure')">
+                    <div class="story-card-image">
+                        <div class="story-card-overlay">
+                            <div class="story-card-blurb">A scientist travels to a remote archipelago to uncover the truth behind a decades-old wartime promise. Joined by unlikely allies, she follows a trail of buried secrets, hidden treasures, and dangerous conspiracies.</div>
+                            <div class="story-card-title">Epic Adventure</div>
+                            <a href="#" class="story-card-cta">Choose this gift →</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 48px; text-align: center;">
+                <p style="margin-bottom: 16px; font-size: 18px; color: #666;">Or let us pick for you</p>
+                <button class="btn btn-primary" onclick="openAgentModal()">Talk to our agent</button>
+            </div>
+        </div>
+
+        <div style="height: 80px;"></div>
+    </div>
+
+    <!-- AGENT MODAL -->
+    <div class="modal-backdrop" id="agent-modal-backdrop" onclick="closeAgentModal()">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2>Let's find your book</h2>
+            </div>
+            <div class="modal-body">
+                <div class="chat-history">
+                    <div class="chat-turn">
+                        <div class="chat-question">Agent: Who is this gift for?</div>
+                        <div class="chat-answer">A friend who loves mystery</div>
+                    </div>
+                    <div class="chat-turn">
+                        <div class="chat-question">Agent: How old are they?</div>
+                        <div class="chat-answer">Around 40</div>
+                    </div>
+                </div>
+                <input type="text" class="modal-input" placeholder="e.g., full surprise or give them a hint?" />
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="nextTurn()">Next</button>
+                    <button class="btn btn-secondary" onclick="closeAgentModal()">Cancel</button>
+                </div>
+                <a href="#" class="skip-link" onclick="closeAgentModal(); return false;">Skip to checkout →</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MINI CART -->
+    <div class="mini-cart" id="mini-cart">
+        <div class="mini-cart-header">
+            <h3 style="margin: 0; font-family: Georgia, serif;">Your Gift Kit</h3>
+            <button class="mini-cart-close" onclick="closeMiniCart()">×</button>
+        </div>
+        <div class="mini-cart-content">
+            <div id="cart-items">
+                <p style="color: #999; text-align: center; padding: 32px 0;">Your cart is empty</p>
+            </div>
+        </div>
+        <div class="mini-cart-footer">
+            <div class="subscription-options">
+                <div class="subscription-label">Delivery Type</div>
+                <div class="radio-group">
+                    <div class="radio-option">
+                        <input type="radio" id="onetime" name="subscription" value="one-time" checked>
+                        <label for="onetime">One-time purchase</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="monthly" name="subscription" value="monthly">
+                        <label for="monthly">Subscription - montlhy</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="bimonth" name="subscription" value="bi-month">
+                        <label for="bimonth">Subscription - Bi-month</label>
+                    </div>
+                    <div class="radio-option">
+                        <input type="radio" id="threemonth" name="subscription" value="three-month">
+                        <label for="threemonth">Subscription - Three-month</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mini-cart-total">Total: <span>$24.99</span></div>
+            <button class="btn btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="checkout()">Complete checkout</button>
+            <button class="btn btn-secondary" style="width: 100%;" onclick="closeMiniCart()">Keep shopping</button>
+        </div>
+    </div>
+
+    <script>
+        let cartCount = 0;
+
+        function addToCart(mood) {
+            cartCount++;
+            document.getElementById('cart-count').textContent = cartCount;
+            
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = `
+                <div class="cart-item">
+                    <div class="cart-item-title">${mood} Book</div>
+                    <div class="cart-item-price">$24.99</div>
+                    <a href="#" style="color: var(--accent); font-size: 12px;" onclick="removeItem(event)">Remove</a>
+                </div>
+            `;
+            
+            openMiniCart();
+        }
+
+        function removeItem(e) {
+            e.preventDefault();
+            cartCount = Math.max(0, cartCount - 1);
+            document.getElementById('cart-count').textContent = cartCount;
+            document.getElementById('cart-items').innerHTML = '<p style="color: #999; text-align: center; padding: 32px 0;">Your cart is empty</p>';
+        }
+
+        function openMiniCart() {
+            document.getElementById('mini-cart').classList.add('show');
+        }
+
+        function closeMiniCart() {
+            document.getElementById('mini-cart').classList.remove('show');
+        }
+
+        function openAgentModal() {
+            document.getElementById('agent-modal-backdrop').classList.add('show');
+        }
+
+        function closeAgentModal() {
+            document.getElementById('agent-modal-backdrop').classList.remove('show');
+        }
+
+        function nextTurn() {
+            alert('Agent would process input and show next question');
+        }
+
+        function checkout() {
+            alert('Proceed to checkout flow');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Blind Date Book — Components</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header class="site-header">
+      <a class="logo-link" href="./index.html" aria-label="Blind Date Book home">
+        <img src="logo-blind-date-book.svg" alt="Blind Date Book logo" class="logo-img" />
+      </a>
+      <div class="site-title">
+        <h1>Blind Date Book</h1>
+        <p class="subtitle">Discover a story you'll love</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-agent pulse" id="agent-btn">Talk to Agent</button>
+        <button class="btn btn-primary" id="cart-btn">Cart <span class="cart-badge" id="cart-count">0</span></button>
+      </div>
+    </header>
+    <div class="agent-help" role="note">Tell the Agent who it's for and one or two likes — we'll pick a surprise book and gift wrap it.</div>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <h1>The Gift That Surprises</h1>
+          <p>Curated book selections tailored to your mood. Unboxing ritual included.</p>
+          <div class="hero-video" id="hero-video" role="button" aria-label="Open checkout for one-time purchase">
+            <img src="https://img.youtube.com/vi/gPGTI56o54U/maxresdefault.jpg" alt="Blind Date Book video preview" style="width:100%;height:260px;object-fit:cover;display:block;" />
+            <div class="hero-video-overlay">
+              <div style="text-align:center;">
+                <span>Tap to buy now</span>
+                <br />
+                <a href="https://www.youtube.com/watch?v=gPGTI56o54U" target="_blank" rel="noopener noreferrer">Watch on YouTube</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Choose Your Mood</h2>
+        <div class="story-grid">
+          <div class="card" data-mood="Cozy Mystery">
+              <div class="overlay">
+                <div class="blurb">A married couple's life is thrown into chaos when one spouse suddenly vanishes. Hidden resentments, deception, and competing narratives emerge as the investigation reveals that neither person is quite who they seem.</div>
+                <div class="title">Cozy Mystery</div>
+                <a class="cta" href="#">Choose this gift →</a>
+              </div>
+          </div>
+
+          <div class="card" data-mood="Literary Romance">
+            <div class="overlay">
+              <div class="blurb">A struggling woman takes a job that could change her life, only to find herself entangled with a powerful, enigmatic businessman. Attraction, hidden motives, and difficult choices force both to confront secrets that could unravel everything.</div>
+              <div class="title">Literary Romance</div>
+              <a class="cta" href="#">Choose this gift →</a>
+            </div>
+          </div>
+
+          <div class="card" data-mood="Epic Adventure">
+            <div class="overlay">
+              <div class="blurb">A scientist travels to a remote archipelago to uncover the truth behind a decades-old wartime promise. Joined by unlikely allies, she follows a trail of buried secrets, hidden treasures, and dangerous conspiracies.</div>
+              <div class="title">Epic Adventure</div>
+              <a class="cta" href="#">Choose this gift →</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <div class="modal-backdrop" id="agent-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="agent-title">
+        <div class="modal-header">
+          <h2 id="agent-title">Let's find your book</h2>
+        </div>
+        <div class="modal-body">
+          <div class="chat-history" id="chat-history">
+          </div>
+          <input class="input" id="agent-input" placeholder="e.g., gift for my son who loves dinosaurs" />
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary" id="agent-next">Next</button>
+            <button class="btn btn-accent" id="agent-skip">Skip to checkout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mini-cart" id="mini-cart">
+      <div class="mini-cart-header">
+        <div>Your Gift Kit</div>
+        <button class="mini-cart-close" id="mini-close">×</button>
+      </div>
+      <div class="mini-cart-content" id="cart-items">
+        <p style="color:#999;text-align:center;padding:32px 0;">Your cart is empty</p>
+      </div>
+      <div class="mini-cart-footer">
+        <div style="margin-bottom:8px;">Delivery Type</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
+          <label><input type="radio" name="sub" value="one-time" checked/> One-time purchase</label>
+          <label><input type="radio" name="sub" value="monthly"/> Subscription - montlhy</label>
+          <label><input type="radio" name="sub" value="bi-month"/> Subscription - Bi-month</label>
+          <label><input type="radio" name="sub" value="three-month"/> Subscription - Three-month</label>
+        </div>
+        <div style="font-weight:700;margin-bottom:8px">Total: <span id="cart-total" style="color:var(--color-primary)">$24.99</span></div>
+        <button class="btn btn-primary" style="width:100%" id="checkout-btn">Complete checkout</button>
+      </div>
+    </div>
+
+    <div class="modal-backdrop" id="checkout-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
+        <div class="modal-header">
+          <h2 id="checkout-title">Complete checkout</h2>
+        </div>
+        <div class="modal-body">
+          <form id="checkout-form" class="checkout-form">
+            <fieldset>
+              <legend>Shipping address</legend>
+              <div class="checkout-grid two-column">
+                <label>Full name<input type="text" id="shipping-name" required placeholder="Jane Doe" /></label>
+                <label>Phone<input type="tel" id="shipping-phone" required placeholder="(555) 123-4567" /></label>
+              </div>
+              <div class="checkout-grid">
+                <label>Street address<input type="text" id="shipping-address" required placeholder="123 Main Street" /></label>
+                <label>Apartment, suite, etc.<input type="text" id="shipping-address2" placeholder="Apt 4B" /></label>
+              </div>
+              <div class="checkout-grid two-column">
+                <label>City<input type="text" id="shipping-city" required placeholder="Portland" /></label>
+                <label>State / province<input type="text" id="shipping-region" required placeholder="ME" /></label>
+              </div>
+              <div class="checkout-grid two-column">
+                <label>Postal code<input type="text" id="shipping-postal" required placeholder="04101" /></label>
+                <label>Country<input type="text" id="shipping-country" required placeholder="USA" /></label>
+              </div>
+            </fieldset>
+            <fieldset>
+              <legend>Billing address</legend>
+              <label class="billing-same"><input type="checkbox" id="same-billing" checked /> Billing same as shipping</label>
+              <div id="billing-fields" class="checkout-grid two-column" style="display:none;">
+          async function submitAgent(){
+            const text = agentInput.value.trim();
+            if(!text) return;
+            const q = document.createElement('div');
+            q.className='chat-turn';
+            q.innerHTML = `<div class="chat-question">You</div><div class="chat-answer">${text}</div>`;
+            chatHistory.appendChild(q);
+            agentInput.value='';
+
+            // Show a temporary thinking indicator
+            const thinking = document.createElement('div');
+            thinking.className = 'chat-turn chat-thinking';
+            thinking.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Thinking…</div>`;
+            chatHistory.appendChild(thinking);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+
+            try{
+              if(window.BlindDateApi && typeof window.BlindDateApi.parseAgent === 'function'){
+                const res = await window.BlindDateApi.parseAgent(text);
+                thinking.remove();
+                const parsed = res.parsed || res;
+                const resp = document.createElement('div');
+                resp.className='chat-turn';
+                const summaryParts = [];
+                if(parsed.recipient_type) summaryParts.push(`<strong>For:</strong> ${parsed.recipient_type}`);
+                if(parsed.recipient_age_range) summaryParts.push(`<strong>Age:</strong> ${parsed.recipient_age_range}`);
+                if(parsed.genres && parsed.genres.length) summaryParts.push(`<strong>Genres:</strong> ${parsed.genres.join(', ')}`);
+                if(parsed.avoid && parsed.avoid.length) summaryParts.push(`<strong>Avoid:</strong> ${parsed.avoid.join(', ')}`);
+                if(parsed.surprise_level) summaryParts.push(`<strong>Surprise:</strong> ${parsed.surprise_level}`);
+                summaryParts.push(`<em>Raw:</em> ${parsed.raw_input ?? text}`);
+                resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer"><div class="parsed-summary">${summaryParts.join('<br/>')}</div></div>`;
+                chatHistory.appendChild(resp);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+
+                // Heuristic: pre-fill cart for certain genres
+                if(parsed.genres && parsed.genres.includes('Romance')){
+                  addToCart('Literary Romance');
+                }
+              } else {
+                // fallback to original simulation when API client not available
+                thinking.remove();
+                const resp = document.createElement('div');
+                resp.className='chat-turn';
+                resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Got it — we'll find a great match based on that.</div>`;
+                chatHistory.appendChild(resp);
+                chatHistory.scrollTop = chatHistory.scrollHeight;
+              }
+            }catch(err){
+              thinking.remove();
+              const errEl = document.createElement('div');
+              errEl.className='chat-turn';
+              errEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Sorry, I couldn't reach the recommendation service. Try again later.</div>`;
+              chatHistory.appendChild(errEl);
+              chatHistory.scrollTop = chatHistory.scrollHeight;
+              console.error('submitAgent error', err);
+            }
+          }
+                <label>Expiration<input type="text" id="card-expiry" placeholder="MM/YY" /></label>
+                <label>CVC<input type="text" id="card-cvc" placeholder="123" /></label>
+                <label>Cardholder name<input type="text" id="card-name" placeholder="Jane Doe" /></label>
+              </div>
+              <div id="pix-info" style="display:none;margin-top:12px;font-size:14px;color:#1E2A44;">
+                Use PIX to complete payment instantly. A QR code or copy-paste key will be shown after you confirm the order.
+              </div>
+            </fieldset>
+            <div class="form-actions" style="gap:12px;display:flex;flex-direction:column;">
+              <button type="submit" class="btn btn-primary" style="width:100%">Place order</button>
+            </div>
+          </form>
+          <button type="button" class="btn btn-secondary btn-small" id="return-to-cart">Return to cart</button>
+        </div>
+      </div>
+    </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="api-client/openapi-client.js"></script>
+  <script src="api-client/api-example.js"></script>
+  <script>
+    const cards = document.querySelectorAll('.card');
+    const cartBtn = document.getElementById('cart-btn');
+    const miniCart = document.getElementById('mini-cart');
+    const cartCountEl = document.getElementById('cart-count');
+    const cartItemsEl = document.getElementById('cart-items');
+    const agentBtn = document.getElementById('agent-btn');
+    const agentModal = document.getElementById('agent-modal');
+    const agentNext = document.getElementById('agent-next');
+    const agentInput = document.getElementById('agent-input');
+    const chatHistory = document.getElementById('chat-history');
+    const agentSkip = document.getElementById('agent-skip');
+    const miniClose = document.getElementById('mini-close');
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutBtn = document.getElementById('checkout-btn');
+    const checkoutForm = document.getElementById('checkout-form');
+    const sameBilling = document.getElementById('same-billing');
+    const billingFields = document.getElementById('billing-fields');
+    const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
+    const creditCardFields = document.getElementById('credit-card-fields');
+    const pixInfo = document.getElementById('pix-info');
+
+    let cartCount = 0;
+    let currentCartItem = null;
+
+    function openMiniCart(){
+      miniCart.classList.add('show');
+    }
+    function closeMiniCart(){
+      miniCart.classList.remove('show');
+    }
+
+    cards.forEach(card=>{
+      card.addEventListener('click',()=>{
+        const mood = card.dataset.mood;
+        addToCart(mood);
+      })
+    })
+
+    function addToCart(mood){
+      if(currentCartItem && currentCartItem.mood === mood){
+        currentCartItem.quantity += 1;
+      } else {
+        currentCartItem = { mood, quantity: 1, price: 24.99 };
+      }
+      renderCartItem();
+      openMiniCart();
+    }
+
+    function removeItem(e){
+      e.preventDefault();
+      currentCartItem = null;
+      cartCount = 0;
+      cartCountEl.textContent = cartCount;
+      cartItemsEl.innerHTML = '<p style="color:#999;text-align:center;padding:32px 0;">Your cart is empty</p>';
+      document.getElementById('cart-total').textContent = '$0.00';
+    }
+
+    function renderCartItem(){
+      cartCount = currentCartItem.quantity;
+      cartCountEl.textContent = cartCount;
+      const total = (currentCartItem.price * currentCartItem.quantity).toFixed(2);
+      cartItemsEl.innerHTML = `\n        <div class="cart-item">\n          <div class="cart-item-title">${currentCartItem.mood} Book</div>\n          <div class="cart-item-meta">\n            <div class="cart-item-price">Unit price: $${currentCartItem.price.toFixed(2)}</div>\n            <label class="cart-item-quantity">Qty <input type="number" min="1" value="${currentCartItem.quantity}" onchange="changeQuantity(event)" /></label>\n          </div>\n          <div class="cart-item-total">Total: $${total}</div>\n          <a href="#" style="color:var(--color-accent);font-size:12px;" onclick="removeItem(event)">Remove</a>\n        </div>\n      `;
+      document.getElementById('cart-total').textContent = '$' + total;
+    }
+
+    function changeQuantity(e){
+      const qty = Math.max(1, parseInt(e.target.value, 10) || 1);
+      currentCartItem.quantity = qty;
+      renderCartItem();
+    }
+
+    cartBtn.addEventListener('click',()=>{openMiniCart()});
+    miniClose.addEventListener('click',()=>{closeMiniCart()});
+    const returnToCartBtn = document.getElementById('return-to-cart');
+    checkoutBtn.addEventListener('click',()=>{if(cartCount === 0){openMiniCart();} else {openCheckout();}});
+    checkoutModal.addEventListener('click',(e)=>{if(e.target===checkoutModal)closeCheckout();});
+    checkoutForm.addEventListener('submit',(e)=>{handleCheckout(e)});
+    returnToCartBtn.addEventListener('click',()=>{closeCheckout();openMiniCart();});
+    sameBilling.addEventListener('change',()=>{billingFields.style.display = sameBilling.checked ? 'none' : 'grid';});
+    paymentRadios.forEach(radio=>radio.addEventListener('change', handlePaymentChange));
+
+    agentBtn.addEventListener('click',()=>{agentModal.classList.add('show')});
+    agentModal.addEventListener('click',(e)=>{if(e.target===agentModal)agentModal.classList.remove('show')});
+    agentNext.addEventListener('click',()=>{submitAgent()});
+    agentSkip.addEventListener('click',()=>{agentModal.classList.remove('show');openMiniCart()});
+    document.getElementById('hero-video').addEventListener('click',()=>{heroVideoCheckout()});
+
+    function setOneTimePurchase(){
+      const oneTime = document.querySelector('input[name="sub"][value="one-time"]');
+      if(oneTime) oneTime.checked = true;
+    }
+
+    function openCheckout(){
+      checkoutModal.classList.add('show');
+    }
+
+    function closeCheckout(){
+      checkoutModal.classList.remove('show');
+    }
+
+    function handlePaymentChange(){
+      const method = document.querySelector('input[name="payment-method"]:checked').value;
+      creditCardFields.style.display = method === 'credit-card' ? 'grid' : 'none';
+      pixInfo.style.display = method === 'pix' ? 'block' : 'none';
+    }
+
+    function heroVideoCheckout(){
+      setOneTimePurchase();
+      if(cartCount === 0){
+        addToCart('Blind Date Book Gift');
+      }
+      // Open mini-cart instead of checkout per updated requirement
+      openMiniCart();
+    }
+
+    function handleCheckout(e){
+      e.preventDefault();
+      if(!currentCartItem){
+        alert('Please add an item to the cart before checking out.');
+        closeCheckout();
+        return;
+      }
+      const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+      const orderSummary = `${currentCartItem.quantity} × ${currentCartItem.mood} Book - ${document.getElementById('cart-total').textContent}`;
+      alert(`Order placed!\n${orderSummary}\nPayment: ${paymentMethod === 'pix' ? 'PIX' : 'Credit card'}`);
+      currentCartItem = null;
+      cartCount = 0;
+      cartCountEl.textContent = cartCount;
+      cartItemsEl.innerHTML = '<p style="color:#999;text-align:center;padding:32px 0;">Your cart is empty</p>';
+      document.getElementById('cart-total').textContent = '$0.00';
+      closeCheckout();
+      closeMiniCart();
+    }
+
+    async function submitAgent(){
+      const text = agentInput.value.trim();
+      if(!text) return;
+      const q = document.createElement('div');
+      q.className='chat-turn';
+      q.innerHTML = `<div class="chat-question">You</div><div class="chat-answer">${text}</div>`;
+      chatHistory.appendChild(q);
+      agentInput.value='';
+
+      const thinking = document.createElement('div');
+      thinking.className='chat-turn chat-thinking';
+      thinking.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Parsing your preferences...</div>`;
+      chatHistory.appendChild(thinking);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try{
+        const res = await fetch('http://127.0.0.1:5000/api/parse', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text })
+        });
+        thinking.remove();
+
+        if(!res.ok){
+          throw new Error('Parse request failed');
+        }
+
+        const data = await res.json();
+        const parsed = {
+          recipient_type: data.recipient || 'self',
+          recipient_age_range: data.age_range || null,
+          genres: data.genres || [],
+          avoid: data.avoid || [],
+          surprise_level: data.surprise_level || null,
+          raw_input: data.raw || text
+        };
+
+        const resp = document.createElement('div');
+        resp.className='chat-turn';
+        const summary = [];
+        if(parsed.recipient_type) summary.push(`<strong>For:</strong> ${parsed.recipient_type}`);
+        if(parsed.recipient_age_range) summary.push(`<strong>Age:</strong> ${parsed.recipient_age_range}`);
+        if(parsed.genres.length) summary.push(`<strong>Genres:</strong> ${parsed.genres.join(', ')}`);
+        if(parsed.avoid.length) summary.push(`<strong>Avoid:</strong> ${parsed.avoid.join(', ')}`);
+        if(parsed.surprise_level) summary.push(`<strong>Surprise:</strong> ${parsed.surprise_level}`);
+        summary.push(`<em>Raw:</em> ${parsed.raw_input}`);
+
+        resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer"><div class="parsed-summary">${summary.join('<br/>')}</div></div>`;
+        chatHistory.appendChild(resp);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        if(parsed.genres.includes('mystery') || parsed.genres.includes('thriller')){
+          addToCart('Cozy Mystery');
+        }
+      } catch (error) {
+        thinking.remove();
+        const resp = document.createElement('div');
+        resp.className='chat-turn';
+        resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Sorry, I couldn't reach the parser. Please try again.</div>`;
+        chatHistory.appendChild(resp);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        console.error(error);
+      }
+    }
+
+    function showScreen(name){
+      // placeholder
+    }
+
+  </script>
+</body>
+</html>

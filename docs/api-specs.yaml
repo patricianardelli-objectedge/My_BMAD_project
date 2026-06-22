@@ -1,0 +1,310 @@
+openapi: 3.0.3
+info:
+  title: Blind Date Book API
+  version: 0.1.0
+  description: OpenAPI spec (pilot) for key endpoints: agent parse, AI decision, checkout.
+servers:
+  - url: https://api.example.com
+  - url: http://localhost:8000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    PreferenceObject:
+      type: object
+      properties:
+        recipient_type:
+          type: string
+          enum: [self, gift]
+        recipient_age_range:
+          type: string
+          description: age bucket like 'under-12', '25-34'
+        genres:
+          type: array
+          items:
+            type: string
+        avoid:
+          type: array
+          items:
+            type: string
+        surprise_level:
+          type: string
+          enum: [light_hint, moderate, full]
+        raw_input:
+          type: string
+      required: [raw_input]
+
+    RecipientDetails:
+      type: object
+      properties:
+        name:
+          type: string
+        age:
+          type: integer
+        relationship:
+          type: string
+
+    BookCandidate:
+      type: object
+      properties:
+        book_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        score:
+          type: number
+        reason:
+          type: object
+
+    Address:
+      type: object
+      properties:
+        line1: { type: string }
+        line2: { type: string }
+        city: { type: string }
+        region: { type: string }
+        postal_code: { type: string }
+        country: { type: string }
+
+    CartItem:
+      type: object
+      properties:
+        book_id: { type: string, format: uuid }
+        qty: { type: integer }
+        price_cents: { type: integer }
+
+    PaymentMethod:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/CreditCard'
+        - $ref: '#/components/schemas/PIX'
+
+    CreditCard:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [credit_card]
+        token:
+          type: string
+          description: 'Payment token from Stripe elements (do not send raw card data)'
+        cardholder_name: { type: string }
+
+    PIX:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [pix]
+        pix_key:
+          type: string
+          description: 'Optional provider key or null for server-generated QR'
+
+  examples:
+    ParseExample:
+      summary: 'Agent parse example'
+      value:
+        text: "I'm buying for my 8-year-old son who loves dinosaurs and adventure. No scary stuff."
+
+paths:
+  /api/agent/parse:
+    post:
+      summary: Parse free-text preferences from conversational agent
+      tags: [agent]
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                text: { type: string }
+                session_id: { type: string }
+            examples:
+              example-1: { $ref: '#/components/examples/ParseExample' }
+      responses:
+        '200':
+          description: Parsed preference object and follow-up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  parsed:
+                    $ref: '#/components/schemas/PreferenceObject'
+                  follow_up_question:
+                    type: string
+                    nullable: true
+                  suggestions:
+                    type: array
+                    items:
+                      type: string
+              examples:
+                parsed-sample:
+                  value:
+                    parsed:
+                      recipient_type: gift
+                      recipient_age_range: under-12
+                      genres: ["children","adventure","dinosaurs"]
+                      avoid: ["horror","explicit"]
+                      surprise_level: light_hint
+                      raw_input: "I'm buying for my 8-year-old son who loves dinosaurs and adventure. No scary stuff."
+                    follow_up_question: null
+
+  /api/ai/decide:
+    post:
+      summary: Decide best-fit book given preferences
+      tags: [ai]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                preferences:
+                  $ref: '#/components/schemas/PreferenceObject'
+                recipient_details:
+                  $ref: '#/components/schemas/RecipientDetails'
+                exclude_books:
+                  type: array
+                  items:
+                    type: string
+                allow_explicit:
+                  type: boolean
+                max_candidates:
+                  type: integer
+            example:
+              preferences:
+                raw_input: "gift for my friend, 35, likes cozy mystery"
+                recipient_type: gift
+                recipient_age_range: '35-44'
+                genres: ["cozy mystery"]
+                avoid: []
+                surprise_level: full
+              recipient_details:
+                name: "Alicia"
+                age: 35
+                relationship: friend
+              exclude_books: []
+              allow_explicit: false
+              max_candidates: 5
+      responses:
+        '200':
+          description: Selected book and scoring reason
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  book_id: { type: string }
+                  title: { type: string }
+                  score: { type: number }
+                  reason: { type: object }
+                  candidates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BookCandidate'
+              examples:
+                sample-decision:
+                  value:
+                    book_id: "5f6d7c8a-1234-4bcd-9876-abcdef123456"
+                    title: "Midsummer Manor Mystery"
+                    score: 0.92
+                    reason:
+                      genre_match: 0.6
+                      mood_match: 0.2
+                      age_safety: 0.1
+                      delivered_penalty: -0.0
+                    candidates:
+                      - book_id: "5f6d7c8a-1234-4bcd-9876-abcdef123456"
+                        title: "Midsummer Manor Mystery"
+                        score: 0.92
+                      - book_id: "7a8b9c0d-2345-4bcd-9876-abcdef654321"
+                        title: "Tea & Alibis"
+                        score: 0.74
+
+  /api/checkout:
+    post:
+      summary: Create order and process payment (pilot: simulate)
+      tags: [checkout]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cart:
+                  type: object
+                  properties:
+                    items:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/CartItem'
+                shipping_address:
+                  $ref: '#/components/schemas/Address'
+                billing_address:
+                  $ref: '#/components/schemas/Address'
+                recipient_details:
+                  $ref: '#/components/schemas/RecipientDetails'
+                payment_method:
+                  $ref: '#/components/schemas/PaymentMethod'
+                metadata:
+                  type: object
+            examples:
+              sample-checkout:
+                value:
+                  cart:
+                    items:
+                      - book_id: "5f6d7c8a-1234-4bcd-9876-abcdef123456"
+                        qty: 1
+                        price_cents: 2499
+                  shipping_address:
+                    line1: "123 Main St"
+                    city: "Portland"
+                    region: "ME"
+                    postal_code: "04101"
+                    country: "USA"
+                  billing_address:
+                    line1: "123 Main St"
+                    city: "Portland"
+                    region: "ME"
+                    postal_code: "04101"
+                    country: "USA"
+                  recipient_details:
+                    name: "Emma"
+                    age: 8
+                    relationship: daughter
+                  payment_method:
+                    type: credit_card
+                    token: tok_visa_12345
+      responses:
+        '200':
+          description: Order created and payment accepted (pilot simulated)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id: { type: string }
+                  payment_status: { type: string }
+                  tracking: { type: object }
+              examples:
+                sample-order:
+                  value:
+                    order_id: "ord_01GZx2Y..."
+                    payment_status: paid
+                    tracking: null
+
+security:
+  - bearerAuth: []
