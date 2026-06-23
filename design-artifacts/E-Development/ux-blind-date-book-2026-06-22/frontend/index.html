@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Blind Date Book — Components</title>
+  <link rel="preconnect" href="https://img.youtube.com" crossorigin>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -17,6 +18,8 @@
         <p class="subtitle">Discover a story you'll love</p>
       </div>
       <div class="header-actions">
+        <button class="btn btn-secondary btn-small" id="profile-btn" style="display:none;">Profile</button>
+        <button class="btn btn-secondary btn-small" id="login-btn">Login</button>
         <button class="btn btn-agent pulse" id="agent-btn">Talk to Agent</button>
         <button class="btn btn-primary" id="cart-btn">Cart <span class="cart-badge" id="cart-count">0</span></button>
       </div>
@@ -28,8 +31,8 @@
         <div class="container">
           <h1>The Gift That Surprises</h1>
           <p>Curated book selections tailored to your mood. Unboxing ritual included.</p>
-          <div class="hero-video" id="hero-video" role="button" aria-label="Open checkout for one-time purchase">
-            <img src="https://img.youtube.com/vi/gPGTI56o54U/maxresdefault.jpg" alt="Blind Date Book video preview" style="width:100%;height:260px;object-fit:cover;display:block;" />
+          <div class="hero-video" id="hero-video" role="button" tabindex="0" aria-label="Open mini cart for one-time purchase">
+            <img src="https://img.youtube.com/vi/gPGTI56o54U/maxresdefault.jpg" alt="Blind Date Book video preview" width="1200" height="260" fetchpriority="high" decoding="async" style="width:100%;height:260px;object-fit:cover;display:block;" />
             <div class="hero-video-overlay">
               <div style="text-align:center;">
                 <span>Tap to buy now</span>
@@ -43,12 +46,13 @@
 
       <section>
         <h2>Choose Your Mood</h2>
+        <p id="selected-trail" class="selected-trail" role="status" aria-live="polite">No trail selected yet.</p>
         <div class="story-grid">
           <div class="card" data-mood="Cozy Mystery">
               <div class="overlay">
                 <div class="blurb">A married couple's life is thrown into chaos when one spouse suddenly vanishes. Hidden resentments, deception, and competing narratives emerge as the investigation reveals that neither person is quite who they seem.</div>
                 <div class="title">Cozy Mystery</div>
-                <a class="cta" href="#">Choose this gift →</a>
+                <button type="button" class="cta story-cta" data-mood="Cozy Mystery">Choose this gift</button>
               </div>
           </div>
 
@@ -56,7 +60,7 @@
             <div class="overlay">
               <div class="blurb">A struggling woman takes a job that could change her life, only to find herself entangled with a powerful, enigmatic businessman. Attraction, hidden motives, and difficult choices force both to confront secrets that could unravel everything.</div>
               <div class="title">Literary Romance</div>
-              <a class="cta" href="#">Choose this gift →</a>
+              <button type="button" class="cta story-cta" data-mood="Literary Romance">Choose this gift</button>
             </div>
           </div>
 
@@ -64,7 +68,7 @@
             <div class="overlay">
               <div class="blurb">A scientist travels to a remote archipelago to uncover the truth behind a decades-old wartime promise. Joined by unlikely allies, she follows a trail of buried secrets, hidden treasures, and dangerous conspiracies.</div>
               <div class="title">Epic Adventure</div>
-              <a class="cta" href="#">Choose this gift →</a>
+              <button type="button" class="cta story-cta" data-mood="Epic Adventure">Choose this gift</button>
             </div>
           </div>
         </div>
@@ -76,14 +80,45 @@
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="agent-title">
         <div class="modal-header">
           <h2 id="agent-title">Let's find your book</h2>
+          <button class="modal-close" id="modal-close-btn" aria-label="Close preference modal">×</button>
         </div>
         <div class="modal-body">
-          <div class="chat-history" id="chat-history">
+          <!-- Chat flow section -->
+          <div id="agent-chat-section" class="agent-section">
+            <div class="turn-progress" id="turn-progress" role="status" aria-live="polite">Question 1 of 6</div>
+            <div class="chat-history" id="chat-history" role="log" aria-label="Agent conversation history" aria-live="polite">
+            </div>
+            <input class="input" id="agent-input" placeholder="e.g., gift for my son who loves dinosaurs" autocomplete="off" />
+            <div class="agent-actions">
+              <button class="btn btn-primary" id="agent-next">Next</button>
+              <button class="btn btn-secondary" id="agent-skip">Skip flow</button>
+            </div>
           </div>
-          <input class="input" id="agent-input" placeholder="e.g., gift for my son who loves dinosaurs" />
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-primary" id="agent-next">Next</button>
-            <button class="btn btn-accent" id="agent-skip">Skip to checkout</button>
+
+          <!-- Confirmation summary section (hidden by default) -->
+          <div id="agent-confirmation-section" class="agent-section" style="display:none;">
+            <h3 class="confirmation-title">Here's what I understood:</h3>
+            <div class="confirmation-summary" id="confirmation-summary">
+            </div>
+            <div class="confirmation-actions">
+              <button class="btn btn-primary" id="confirmation-continue">Continue to matches</button>
+              <button class="btn btn-secondary btn-small" id="confirmation-edit">Edit answers</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recommendation Card Modal (Story 2.2) -->
+    <div class="modal-backdrop" id="recommendation-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="recommendation-title">
+        <div class="modal-header">
+          <h2 id="recommendation-title">Your Perfect Match</h2>
+          <button class="modal-close" id="recommendation-close" aria-label="Close recommendation">×</button>
+        </div>
+        <div class="modal-body recommendation-card">
+          <div id="recommendation-content">
+            <div style="text-align:center;padding:32px;"><p>Loading your perfect match...</p></div>
           </div>
         </div>
       </div>
@@ -101,9 +136,9 @@
         <div style="margin-bottom:8px;">Delivery Type</div>
         <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px">
           <label><input type="radio" name="sub" value="one-time" checked/> One-time purchase</label>
-          <label><input type="radio" name="sub" value="monthly"/> Subscription - montlhy</label>
-          <label><input type="radio" name="sub" value="bi-month"/> Subscription - Bi-month</label>
-          <label><input type="radio" name="sub" value="three-month"/> Subscription - Three-month</label>
+          <label><input type="radio" name="sub" value="monthly"/> Subscription - Monthly</label>
+          <label><input type="radio" name="sub" value="bi-month"/> Subscription - Bi-weekly</label>
+          <label><input type="radio" name="sub" value="three-month"/> Subscription - 3-Month</label>
         </div>
         <div style="font-weight:700;margin-bottom:8px">Total: <span id="cart-total" style="color:var(--color-primary)">$24.99</span></div>
         <button class="btn btn-primary" style="width:100%" id="checkout-btn">Complete checkout</button>
@@ -113,106 +148,229 @@
     <div class="modal-backdrop" id="checkout-modal">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title">
         <div class="modal-header">
-          <h2 id="checkout-title">Complete checkout</h2>
+          <h2 id="checkout-title">Complete Your Order</h2>
+          <button type="button" class="btn-close" id="checkout-close" aria-label="Close">&times;</button>
         </div>
         <div class="modal-body">
+          <!-- Cart Summary -->
+          <div class="checkout-summary">
+            <h3>Order Summary</h3>
+            <div id="checkout-cart-items"></div>
+            <div id="checkout-subscription-line"></div>
+            <div class="checkout-total" id="checkout-total-line"></div>
+          </div>
+
+          <!-- Checkout Form -->
           <form id="checkout-form" class="checkout-form">
-            <fieldset>
-              <legend>Shipping address</legend>
-              <div class="checkout-grid two-column">
-                <label>Full name<input type="text" id="shipping-name" required placeholder="Jane Doe" /></label>
-                <label>Phone<input type="tel" id="shipping-phone" required placeholder="(555) 123-4567" /></label>
+            <!-- Shipping Address -->
+            <fieldset class="form-section">
+              <legend>Shipping Address</legend>
+              
+              <div class="form-row">
+                <label for="checkout-name">
+                  Full Name <span aria-label="required">*</span>
+                  <input type="text" id="checkout-name" name="name" required placeholder="Jane Doe" minlength="3" />
+                  <span class="error-message" id="error-checkout-name"></span>
+                </label>
               </div>
-              <div class="checkout-grid">
-                <label>Street address<input type="text" id="shipping-address" required placeholder="123 Main Street" /></label>
-                <label>Apartment, suite, etc.<input type="text" id="shipping-address2" placeholder="Apt 4B" /></label>
+
+              <div class="form-row">
+                <label for="checkout-email">
+                  Email <span aria-label="required">*</span>
+                  <input type="email" id="checkout-email" name="email" required placeholder="jane@example.com" />
+                  <span class="error-message" id="error-checkout-email"></span>
+                </label>
               </div>
-              <div class="checkout-grid two-column">
-                <label>City<input type="text" id="shipping-city" required placeholder="Portland" /></label>
-                <label>State / province<input type="text" id="shipping-region" required placeholder="ME" /></label>
+
+              <div class="form-row">
+                <label for="checkout-phone">
+                  Phone <span aria-label="required">*</span>
+                  <input type="tel" id="checkout-phone" name="phone" required placeholder="(555) 123-4567" />
+                  <span class="error-message" id="error-checkout-phone"></span>
+                </label>
               </div>
-              <div class="checkout-grid two-column">
-                <label>Postal code<input type="text" id="shipping-postal" required placeholder="04101" /></label>
-                <label>Country<input type="text" id="shipping-country" required placeholder="USA" /></label>
+
+              <div class="form-row">
+                <label for="checkout-street">
+                  Street Address <span aria-label="required">*</span>
+                  <input type="text" id="checkout-street" name="street" required placeholder="123 Main Street" />
+                  <span class="error-message" id="error-checkout-street"></span>
+                </label>
+              </div>
+
+              <div class="form-row form-row-grid">
+                <label for="checkout-city">
+                  City <span aria-label="required">*</span>
+                  <input type="text" id="checkout-city" name="city" required placeholder="Portland" />
+                  <span class="error-message" id="error-checkout-city"></span>
+                </label>
+                <label for="checkout-state">
+                  State <span aria-label="required">*</span>
+                  <input type="text" id="checkout-state" name="state" required placeholder="ME" maxlength="2" />
+                  <span class="error-message" id="error-checkout-state"></span>
+                </label>
+                <label for="checkout-zip">
+                  Postal Code <span aria-label="required">*</span>
+                  <input type="text" id="checkout-zip" name="postal_code" required placeholder="04101" />
+                  <span class="error-message" id="error-checkout-zip"></span>
+                </label>
+              </div>
+
+              <!-- Billing Address Option -->
+              <div class="form-row">
+                <label class="checkbox">
+                  <input type="checkbox" id="checkout-billing-different" name="billing_different" />
+                  Billing address different?
+                </label>
+              </div>
+
+              <div id="checkout-billing-fields" style="display:none;">
+                <p style="font-size:13px;color:#666;margin:8px 0;">Same as shipping address</p>
               </div>
             </fieldset>
-            <fieldset>
-              <legend>Billing address</legend>
-              <label class="billing-same"><input type="checkbox" id="same-billing" checked /> Billing same as shipping</label>
-              <div id="billing-fields" class="checkout-grid two-column" style="display:none;">
-          async function submitAgent(){
-            const text = agentInput.value.trim();
-            if(!text) return;
-            const q = document.createElement('div');
-            q.className='chat-turn';
-            q.innerHTML = `<div class="chat-question">You</div><div class="chat-answer">${text}</div>`;
-            chatHistory.appendChild(q);
-            agentInput.value='';
 
-            // Show a temporary thinking indicator
-            const thinking = document.createElement('div');
-            thinking.className = 'chat-turn chat-thinking';
-            thinking.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Thinking…</div>`;
-            chatHistory.appendChild(thinking);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-
-            try{
-              if(window.BlindDateApi && typeof window.BlindDateApi.parseAgent === 'function'){
-                const res = await window.BlindDateApi.parseAgent(text);
-                thinking.remove();
-                const parsed = res.parsed || res;
-                const resp = document.createElement('div');
-                resp.className='chat-turn';
-                const summaryParts = [];
-                if(parsed.recipient_type) summaryParts.push(`<strong>For:</strong> ${parsed.recipient_type}`);
-                if(parsed.recipient_age_range) summaryParts.push(`<strong>Age:</strong> ${parsed.recipient_age_range}`);
-                if(parsed.genres && parsed.genres.length) summaryParts.push(`<strong>Genres:</strong> ${parsed.genres.join(', ')}`);
-                if(parsed.avoid && parsed.avoid.length) summaryParts.push(`<strong>Avoid:</strong> ${parsed.avoid.join(', ')}`);
-                if(parsed.surprise_level) summaryParts.push(`<strong>Surprise:</strong> ${parsed.surprise_level}`);
-                summaryParts.push(`<em>Raw:</em> ${parsed.raw_input ?? text}`);
-                resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer"><div class="parsed-summary">${summaryParts.join('<br/>')}</div></div>`;
-                chatHistory.appendChild(resp);
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-
-                // Heuristic: pre-fill cart for certain genres
-                if(parsed.genres && parsed.genres.includes('Romance')){
-                  addToCart('Literary Romance');
-                }
-              } else {
-                // fallback to original simulation when API client not available
-                thinking.remove();
-                const resp = document.createElement('div');
-                resp.className='chat-turn';
-                resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Got it — we'll find a great match based on that.</div>`;
-                chatHistory.appendChild(resp);
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-              }
-            }catch(err){
-              thinking.remove();
-              const errEl = document.createElement('div');
-              errEl.className='chat-turn';
-              errEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Sorry, I couldn't reach the recommendation service. Try again later.</div>`;
-              chatHistory.appendChild(errEl);
-              chatHistory.scrollTop = chatHistory.scrollHeight;
-              console.error('submitAgent error', err);
-            }
-          }
-                <label>Expiration<input type="text" id="card-expiry" placeholder="MM/YY" /></label>
-                <label>CVC<input type="text" id="card-cvc" placeholder="123" /></label>
-                <label>Cardholder name<input type="text" id="card-name" placeholder="Jane Doe" /></label>
+            <!-- Payment Method -->
+            <fieldset class="form-section">
+              <legend>Payment Method</legend>
+              
+              <div class="form-row">
+                <label class="radio">
+                  <input type="radio" name="payment-method" value="card" checked />
+                  Credit / Debit Card
+                </label>
+                <label class="radio">
+                  <input type="radio" name="payment-method" value="pix" />
+                  PIX (Brazil)
+                </label>
               </div>
-              <div id="pix-info" style="display:none;margin-top:12px;font-size:14px;color:#1E2A44;">
-                Use PIX to complete payment instantly. A QR code or copy-paste key will be shown after you confirm the order.
+
+              <!-- Card Payment Fields -->
+              <div id="checkout-card-section">
+                <div id="checkout-stripe-element"></div>
+                <div id="checkout-stripe-errors" class="error-message"></div>
+              </div>
+
+              <!-- PIX Information -->
+              <div id="checkout-pix-info" style="display:none;padding:12px;background:#f5f5f5;border-radius:4px;font-size:13px;color:#333;margin-top:12px;">
+                <strong>PIX Payment</strong><br />
+                A unique QR code will be generated after you submit. You'll have 30 minutes to scan it with your banking app.
               </div>
             </fieldset>
-            <div class="form-actions" style="gap:12px;display:flex;flex-direction:column;">
-              <button type="submit" class="btn btn-primary" style="width:100%">Place order</button>
+
+            <!-- Agreement -->
+            <div class="form-row">
+              <label class="checkbox" style="font-size:13px;">
+                <input type="checkbox" id="checkout-agree" name="agree" required aria-required="true" />
+                I agree to the terms & privacy policy
+              </label>
+              <span class="error-message" id="error-checkout-agree"></span>
             </div>
+
+            <!-- Error Message Container -->
+            <div id="checkout-error-container" class="error-message" style="display:none;margin:12px 0;padding:12px;background:#ffebee;border-left:4px solid #d32f2f;"></div>
+
+            <!-- Loading State -->
+            <div id="checkout-loading-state" style="display:none;text-align:center;padding:24px;">
+              <div class="spinner"></div>
+              <p>Processing your payment...</p>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions" style="gap:12px;display:flex;flex-direction:row;margin-top:24px;">
+              <button type="submit" id="checkout-submit-btn" class="btn btn-primary" style="flex:1;">Complete Purchase</button>
+              <button type="button" id="checkout-cancel-btn" class="btn btn-secondary" style="flex:1;">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
           </form>
           <button type="button" class="btn btn-secondary btn-small" id="return-to-cart">Return to cart</button>
         </div>
       </div>
     </div>
+
+    <!-- Login Modal (Story 4.1) -->
+    <div class="modal-backdrop" id="login-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 style="margin:0;font-size:20px;">Login to Your Account</h2>
+          <button type="button" class="modal-close" onclick="closeLoginModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <form id="login-form" class="checkout-form">
+            <div class="checkout-grid">
+              <label for="login-email">
+                Email Address
+                <input type="email" id="login-email" name="email" placeholder="you@example.com" required />
+              </label>
+              
+              <label for="login-password">
+                Password
+                <input type="password" id="login-password" name="password" placeholder="••••••••" required />
+              </label>
+            </div>
+            
+            <div id="login-error-container" class="error-message" style="display:none;margin:12px 0;padding:12px;background:#ffebee;border-left:4px solid #d32f2f;"></div>
+            
+            <div id="login-loading-state" style="display:none;text-align:center;padding:24px;">
+              <div class="spinner"></div>
+              <p>Signing you in...</p>
+            </div>
+            
+            <div class="form-actions" style="gap:12px;display:flex;flex-direction:row;margin-top:24px;">
+              <button type="submit" class="btn btn-primary" style="flex:1;">Login</button>
+              <button type="button" class="btn btn-secondary" style="flex:1;" onclick="switchToRegister()">Create Account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Register Modal (Story 4.1) -->
+    <div class="modal-backdrop" id="register-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 style="margin:0;font-size:20px;">Create Your Account</h2>
+          <button type="button" class="modal-close" onclick="closeRegisterModal()">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <form id="register-form" class="checkout-form">
+            <div class="checkout-grid">
+              <label for="register-name">
+                Full Name
+                <input type="text" id="register-name" name="name" placeholder="Your full name" required />
+              </label>
+              
+              <label for="register-email">
+                Email Address
+                <input type="email" id="register-email" name="email" placeholder="you@example.com" required />
+              </label>
+              
+              <label for="register-password">
+                Password (min 8 characters)
+                <input type="password" id="register-password" name="password" placeholder="••••••••" minlength="8" required />
+              </label>
+              
+              <label for="register-password-confirm">
+                Confirm Password
+                <input type="password" id="register-password-confirm" name="password_confirm" placeholder="••••••••" required />
+              </label>
+            </div>
+            
+            <div id="register-error-container" class="error-message" style="display:none;margin:12px 0;padding:12px;background:#ffebee;border-left:4px solid #d32f2f;"></div>
+            
+            <div id="register-loading-state" style="display:none;text-align:center;padding:24px;">
+              <div class="spinner"></div>
+              <p>Creating your account...</p>
+            </div>
+            
+            <div class="form-actions" style="gap:12px;display:flex;flex-direction:row;margin-top:24px;">
+              <button type="submit" class="btn btn-primary" style="flex:1;">Create Account</button>
+              <button type="button" class="btn btn-secondary" style="flex:1;" onclick="switchToLogin()">Already have an account?</button>
+            </div>
           </form>
         </div>
       </div>
@@ -223,11 +381,12 @@
   <script src="api-client/openapi-client.js"></script>
   <script src="api-client/api-example.js"></script>
   <script>
-    const cards = document.querySelectorAll('.card');
+    const storyCtas = document.querySelectorAll('.story-cta');
     const cartBtn = document.getElementById('cart-btn');
     const miniCart = document.getElementById('mini-cart');
     const cartCountEl = document.getElementById('cart-count');
     const cartItemsEl = document.getElementById('cart-items');
+    const selectedTrailLabel = document.getElementById('selected-trail');
     const agentBtn = document.getElementById('agent-btn');
     const agentModal = document.getElementById('agent-modal');
     const agentNext = document.getElementById('agent-next');
@@ -243,9 +402,341 @@
     const paymentRadios = document.querySelectorAll('input[name="payment-method"]');
     const creditCardFields = document.getElementById('credit-card-fields');
     const pixInfo = document.getElementById('pix-info');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+    const agentChatSection = document.getElementById('agent-chat-section');
+    const agentConfirmationSection = document.getElementById('agent-confirmation-section');
+    const confirmationSummaryDiv = document.getElementById('confirmation-summary');
+    const confirmationContinueBtn = document.getElementById('confirmation-continue');
+    const confirmationEditBtn = document.getElementById('confirmation-edit');
+    const turnProgressDiv = document.getElementById('turn-progress');
+    const recommendationModal = document.getElementById('recommendation-modal');
+    const recommendationContent = document.getElementById('recommendation-content');
+    const recommendationCloseBtn = document.getElementById('recommendation-close');
 
     let cartCount = 0;
     let currentCartItem = null;
+
+    // Subscription state (Story 2.3)
+    let subscriptionState = {
+      cadence: 'one-time',
+      start_date: null,
+      initial_price: 24.99,
+      recurring_price: null,
+      frequency_label: 'one-time'
+    };
+
+    // Agent modal state
+    let agentState = {
+      currentTurn: 0,
+      selectedTrail: null,
+      recipient_type: null,
+      recipient_age_range: null,
+      genres: [],
+      mood: null,
+      avoid: [],
+      surprise_level: null,
+      raw_input: null,
+      parseErrors: []
+    };
+
+    // Turn sequence and prompts
+    const turnSequence = [
+      { 
+        turn: 1, 
+        prompt: 'Tell me about the lucky person. Who is this gift for?',
+        field: 'recipient_type',
+        examples: 'e.g., parent, sibling, friend, partner'
+      },
+      { 
+        turn: 2, 
+        prompt: 'How old are they?',
+        field: 'recipient_age_range',
+        examples: 'e.g., teen, 20s, 30s, 40s, 50s, 60+'
+      },
+      { 
+        turn: 3, 
+        prompt: 'What genres do they love?',
+        field: 'genres',
+        examples: 'e.g., romance, sci-fi, mystery, memoir'
+      },
+      { 
+        turn: 4, 
+        prompt: 'What\'s the occasion or mood?',
+        field: 'mood',
+        examples: 'e.g., birthday, adventure, cozy, thought-provoking'
+      },
+      { 
+        turn: 5, 
+        prompt: 'Anything they should avoid?',
+        field: 'avoid',
+        examples: 'e.g., violence, explicit, heavy themes'
+      },
+      { 
+        turn: 6, 
+        prompt: 'How adventurous should this pick be?',
+        field: 'surprise_level',
+        examples: 'e.g., safe, balanced, wildcard'
+      }
+    ];
+
+    function initializeAgent() {
+      agentState = {
+        currentTurn: 0,
+        selectedTrail: sessionStorage.getItem('selectedTrail') || null,
+        recipient_type: null,
+        recipient_age_range: null,
+        genres: [],
+        mood: null,
+        avoid: [],
+        surprise_level: null,
+        raw_input: null,
+        parseErrors: []
+      };
+      chatHistory.innerHTML = '';
+      agentInput.value = '';
+      agentInput.placeholder = 'Your response...';
+      showAgentChatSection();
+      advanceTurn();
+    }
+
+    function showAgentChatSection() {
+      agentChatSection.style.display = 'flex';
+      agentConfirmationSection.style.display = 'none';
+    }
+
+    function showConfirmationSection() {
+      agentChatSection.style.display = 'none';
+      agentConfirmationSection.style.display = 'flex';
+      buildConfirmationSummary();
+      // Focus on the confirmation section
+      document.querySelector('.confirmation-title').focus({ preventScroll: true });
+    }
+
+    function advanceTurn() {
+      agentState.currentTurn += 1;
+      if (agentState.currentTurn > turnSequence.length) {
+        showConfirmationSection();
+        return;
+      }
+      const turn = turnSequence[agentState.currentTurn - 1];
+      displayAgentPrompt(turn.prompt);
+      updateTurnProgress();
+      agentInput.placeholder = turn.examples;
+      agentInput.focus();
+    }
+
+    function displayAgentPrompt(prompt) {
+      const promptEl = document.createElement('div');
+      promptEl.className = 'chat-turn';
+      promptEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">${prompt}</div>`;
+      chatHistory.appendChild(promptEl);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    function updateTurnProgress() {
+      const total = turnSequence.length;
+      const current = Math.min(agentState.currentTurn, total);
+      turnProgressDiv.textContent = `Question ${current} of ${total}`;
+    }
+
+    async function submitAgent() {
+      const text = agentInput.value.trim();
+      if (!text) return;
+
+      // Display user response
+      const userResponseEl = document.createElement('div');
+      userResponseEl.className = 'chat-turn';
+      userResponseEl.innerHTML = `<div class="chat-question">You</div><div class="chat-answer">${text}</div>`;
+      chatHistory.appendChild(userResponseEl);
+      agentInput.value = '';
+
+      // Show parsing animation
+      const thinkingEl = document.createElement('div');
+      thinkingEl.className = 'chat-turn chat-thinking';
+      thinkingEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Understanding your input...</div>`;
+      chatHistory.appendChild(thinkingEl);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        // Call parse API
+        let parsed;
+        if (window.BlindDateApi && typeof window.BlindDateApi.parseAgent === 'function') {
+          const apiRes = await window.BlindDateApi.parseAgent(text);
+          parsed = apiRes.parsed || apiRes;
+        } else {
+          const res = await fetch('http://127.0.0.1:5000/api/agent/parse', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text, turn: agentState.currentTurn })
+          });
+          if (!res.ok) {
+            throw new Error('Parse request failed');
+          }
+          const data = await res.json();
+          parsed = data.parsed || data;
+        }
+
+        // Normalize parsed response
+        const normalized = normalizeParsedData(parsed);
+        
+        // Store raw input
+        agentState.raw_input = text;
+
+        // Update agent state with parsed data
+        updateAgentStateFromParsed(normalized);
+
+        thinkingEl.remove();
+
+        // Display confirmation of parsed data
+        const confirmEl = document.createElement('div');
+        confirmEl.className = 'chat-turn';
+        const confirmText = buildParsedConfirmation(normalized);
+        confirmEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer"><div class="parsed-summary">${confirmText}</div></div>`;
+        chatHistory.appendChild(confirmEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        // Advance to next turn
+        setTimeout(() => {
+          advanceTurn();
+        }, 800);
+
+      } catch (error) {
+        thinkingEl.remove();
+        const errorEl = document.createElement('div');
+        errorEl.className = 'chat-turn';
+        errorEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">I didn't quite catch that. Could you try again?</div>`;
+        chatHistory.appendChild(errorEl);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        agentState.parseErrors.push(error.message);
+        console.error('Parse error:', error);
+        agentInput.focus();
+      }
+    }
+
+    function normalizeParsedData(data) {
+      return {
+        recipient_type: data.recipient || data.recipient_type || null,
+        recipient_age_range: data.age_range || data.recipient_age_range || null,
+        genres: Array.isArray(data.genres) ? data.genres : [],
+        mood: data.mood || null,
+        avoid: Array.isArray(data.avoid) ? data.avoid : [],
+        surprise_level: data.surprise_level || null,
+        raw: data.raw || data.raw_input || null
+      };
+    }
+
+    function updateAgentStateFromParsed(normalized) {
+      const currentTurn = turnSequence[agentState.currentTurn - 1];
+      if (!currentTurn) return;
+
+      switch (currentTurn.field) {
+        case 'recipient_type':
+          if (normalized.recipient_type) agentState.recipient_type = normalized.recipient_type;
+          break;
+        case 'recipient_age_range':
+          if (normalized.recipient_age_range) agentState.recipient_age_range = normalized.recipient_age_range;
+          break;
+        case 'genres':
+          if (normalized.genres.length) agentState.genres = normalized.genres;
+          break;
+        case 'mood':
+          if (normalized.mood) agentState.mood = normalized.mood;
+          break;
+        case 'avoid':
+          if (normalized.avoid.length) agentState.avoid = normalized.avoid;
+          break;
+        case 'surprise_level':
+          if (normalized.surprise_level) agentState.surprise_level = normalized.surprise_level;
+          break;
+      }
+    }
+
+    function buildParsedConfirmation(normalized) {
+      const parts = [];
+      if (normalized.recipient_type) parts.push(`<strong>For:</strong> ${normalized.recipient_type}`);
+      if (normalized.recipient_age_range) parts.push(`<strong>Age:</strong> ${normalized.recipient_age_range}`);
+      if (normalized.genres.length) parts.push(`<strong>Genres:</strong> ${normalized.genres.join(', ')}`);
+      if (normalized.mood) parts.push(`<strong>Mood:</strong> ${normalized.mood}`);
+      if (normalized.avoid.length) parts.push(`<strong>Avoid:</strong> ${normalized.avoid.join(', ')}`);
+      if (normalized.surprise_level) parts.push(`<strong>Surprise:</strong> ${normalized.surprise_level}`);
+      return parts.length ? parts.join('<br/>') : 'Got it!';
+    }
+
+    function buildConfirmationSummary() {
+      // Mark which fields were explicitly collected vs. defaults
+      const fields = [
+        { 
+          label: 'For:', 
+          value: agentState.recipient_type || 'self',
+          isDefault: !agentState.recipient_type || agentState.recipient_type === 'self' && agentState.currentTurn === 0
+        },
+        { 
+          label: 'Age:', 
+          value: agentState.recipient_age_range || '(not specified)',
+          isDefault: !agentState.recipient_age_range
+        },
+        { 
+          label: 'Genres:', 
+          value: agentState.genres.length ? agentState.genres.join(', ') : '(not specified)',
+          isDefault: !agentState.genres.length
+        },
+        { 
+          label: 'Mood:', 
+          value: agentState.mood || agentState.selectedTrail || '(not specified)',
+          isDefault: !agentState.mood
+        },
+        { 
+          label: 'Avoid:', 
+          value: agentState.avoid.length ? agentState.avoid.join(', ') : '(none)',
+          isDefault: !agentState.avoid.length
+        },
+        { 
+          label: 'Surprise:', 
+          value: agentState.surprise_level || 'balanced',
+          isDefault: !agentState.surprise_level
+        }
+      ];
+
+      confirmationSummaryDiv.innerHTML = fields.map(f => {
+        const defaultLabel = f.isDefault ? ' <span style="opacity:0.65;font-size:12px;">(default)</span>' : '';
+        const valueClass = f.isDefault ? ' confirmation-field-default' : '';
+        return `<div class="confirmation-field"><span class="confirmation-field-label">${f.label}</span><span class="confirmation-field-value${valueClass}">${f.value}${defaultLabel}</span></div>`;
+      }).join('');
+    }
+
+    function closeAgentModal() {
+      agentModal.classList.remove('show');
+      // Return focus to agent button
+      agentBtn.focus();
+    }
+
+    function handleEscapeInModal(e) {
+      if (e.key === 'Escape' && agentModal.classList.contains('show')) {
+        closeAgentModal();
+      }
+    }
+
+    function handleTabInModal(e) {
+      if (e.key !== 'Tab') return;
+      
+      const focusableElements = agentModal.querySelectorAll(
+        'button, input[type="text"], input[type="submit"]'
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    }
 
     function openMiniCart(){
       miniCart.classList.add('show');
@@ -254,21 +745,206 @@
       miniCart.classList.remove('show');
     }
 
-    cards.forEach(card=>{
-      card.addEventListener('click',()=>{
-        const mood = card.dataset.mood;
-        addToCart(mood);
-      })
-    })
+    function updateSelectedTrailLabel(mood){
+      selectedTrailLabel.textContent = mood ? `Selected trail: ${mood}` : 'No trail selected yet.';
+    }
 
-    function addToCart(mood){
-      if(currentCartItem && currentCartItem.mood === mood){
-        currentCartItem.quantity += 1;
-      } else {
-        currentCartItem = { mood, quantity: 1, price: 24.99 };
+    function chooseTrail(mood){
+      sessionStorage.setItem('selectedTrail', mood);
+      updateSelectedTrailLabel(mood);
+      agentModal.classList.add('show');
+      agentInput.focus();
+    }
+
+    storyCtas.forEach((cta) => {
+      cta.addEventListener('click', () => {
+        chooseTrail(cta.dataset.mood);
+      });
+    });
+
+    updateSelectedTrailLabel(sessionStorage.getItem('selectedTrail'));
+
+    // Story 2.2: Recommendation Card Functions
+    async function callDecisionEngine() {
+      try {
+        console.log('Calling decision engine with preferences:', agentState);
+        
+        const preferencesForApi = {
+          recipient_type: agentState.recipient_type || 'self',
+          recipient_age_range: agentState.recipient_age_range || 'unknown',
+          genres: agentState.genres || [],
+          avoid: agentState.avoid || [],
+          surprise_level: agentState.surprise_level || 'balanced',
+          mood: agentState.mood || agentState.selectedTrail
+        };
+
+        // Story 4.2 Integration: Pass user_id if logged in to auto-fetch exclude-list
+        const userId = localStorage.getItem('user_id');
+        const requestBody = {
+          preferences: preferencesForApi,
+          exclude_books: [],
+          session_id: agentState.selectedTrail || 'session-' + Date.now()
+        };
+        
+        if (userId) {
+          requestBody.user_id = userId;
+          console.log('Fetching exclude-list for user:', userId);
+        }
+
+        const response = await fetch('http://127.0.0.1:5000/api/ai/decide', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          console.error('Decision engine error:', response.status);
+          throw new Error('Decision engine unavailable');
+        }
+
+        const recommendation = await response.json();
+        console.log('Recommendation received:', recommendation);
+        
+        if (recommendation.error) {
+          console.error('Decision error:', recommendation.error);
+          // Fallback: show generic recommendation
+          displayFallbackRecommendation();
+        } else {
+          displayRecommendation(recommendation);
+        }
+      } catch (error) {
+        console.error('Decision engine call failed:', error);
+        displayFallbackRecommendation();
       }
+    }
+
+    function displayRecommendation(book) {
+      // Build reasoning text (Story 4.2 Integration: include exclude-list info)
+      const reason = book.reason || {};
+      let reasoning = [];
+      
+      if (reason.genre_match > 0.7) {
+        reasoning.push('✓ Great match for ' + (agentState.genres.join(' ') || 'your taste'));
+      }
+      if (reason.mood_match > 0.6) {
+        reasoning.push('✓ Perfect for ' + (agentState.selectedTrail || 'a ' + agentState.mood + ' read'));
+      }
+      if (reason.age_safety >= 1.0) {
+        reasoning.push('✓ Age-appropriate for you');
+      }
+      
+      // Story 4.2: Show if recommendation avoided delivered books
+      if (reason.delivered_penalty > 0) {
+        reasoning.push('✓ Not in your reading history');
+      }
+
+      const confidencePercent = Math.round((book.confidence || 0.8) * 100);
+      const reasoningHTML = reasoning.map(r => `<div style="font-size:14px;margin:4px 0;color:#555;">${r}</div>`).join('');
+
+      const cardHTML = `
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="text-align:center;">
+            <img src="${book.cover_url || 'https://via.placeholder.com/200x300?text=' + encodeURIComponent(book.title)}" 
+                 alt="Cover of ${book.title} by ${book.author}" 
+                 style="width:150px;height:225px;border-radius:8px;object-fit:cover;box-shadow:0 4px 12px rgba(0,0,0,0.1);" />
+          </div>
+          <div>
+            <h3 style="margin:0;font-size:18px;font-weight:700;color:var(--color-primary);font-family:Georgia,serif;">${book.title}</h3>
+            <p style="margin:4px 0 0 0;font-size:14px;color:#666;">by ${book.author}</p>
+            <p style="margin:8px 0 0 0;font-size:16px;font-weight:700;color:var(--color-primary);">$${book.price.toFixed(2)}</p>
+          </div>
+          <div style="background:#f8f7f6;padding:12px;border-radius:8px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:8px;">⭐ ${confidencePercent}% Match</div>
+            ${reasoningHTML}
+          </div>
+          <button class="btn btn-primary" id="add-recommendation-btn" style="width:100%;">Add to Kit →</button>
+          <button class="btn btn-secondary" style="width:100%;font-size:13px;" id="see-options-btn">See other options</button>
+        </div>
+      `;
+
+      recommendationContent.innerHTML = cardHTML;
+      recommendationModal.classList.add('show');
+
+      // Store current recommendation for add-to-cart
+      agentState.currentRecommendation = book;
+
+      // Event listeners for recommendation card buttons
+      document.getElementById('add-recommendation-btn').addEventListener('click', () => {
+        addToCart(book);
+        recommendationModal.classList.remove('show');
+      });
+
+      document.getElementById('see-options-btn').addEventListener('click', () => {
+        // Show alternative candidates (Story 2.2b - optional)
+        console.log('Alternatives:', book.candidates);
+        alert('Top picks: ' + book.candidates.map(c => c.title).join(', '));
+      });
+
+      recommendationModal.focus();
+    }
+
+    function displayFallbackRecommendation() {
+      // Fallback if decision engine fails
+      const fallbackBooks = [
+        { title: 'Midsummer Manor Mystery', author: 'Jane Ashworth', price: 14.99, book_id: 'book-001', confidence: 0.7 },
+        { title: 'A Summer in Provence', author: 'Sophie Laurent', price: 16.99, book_id: 'book-004', confidence: 0.7 }
+      ];
+      const book = fallbackBooks[Math.floor(Math.random() * fallbackBooks.length)];
+      displayRecommendation(Object.assign(book, {
+        cover_url: 'https://via.placeholder.com/200x300?text=' + encodeURIComponent(book.title),
+        reason: { genre_match: 0.6, mood_match: 0.5, age_safety: 1.0 },
+        confidence: 0.7,
+        candidates: []
+      }));
+    }
+
+    // Story 2.3: Subscription Functions
+    function updateSubscriptionDisplay() {
+      const cadence = document.querySelector('input[name="sub"]:checked').value;
+      subscriptionState.cadence = cadence;
+
+      const pricing = {
+        'one-time': { initial: 24.99, recurring: null, label: 'Pay $24.99 now' },
+        'monthly': { initial: 24.99, recurring: 24.99, label: 'Pay $24.99 now, then $24.99/month' },
+        'bi-month': { initial: 24.99, recurring: 24.99, label: 'Pay $24.99 now, then $24.99 every 2 weeks' },
+        'three-month': { initial: 74.97, recurring: null, label: 'Pay $74.97 now for 3 kits' }
+      };
+
+      const chosen = pricing[cadence] || pricing['one-time'];
+      subscriptionState.initial_price = chosen.initial;
+      subscriptionState.recurring_price = chosen.recurring;
+
+      document.getElementById('cart-total').textContent = '$' + chosen.initial.toFixed(2);
+      
+      // Optional: Show pricing details
+      console.log('Subscription updated:', subscriptionState);
+    }
+
+    function addToCart(book) {
+      if (typeof book === 'object' && book.book_id) {
+        // Story 2.2: Book object from recommendation
+        currentCartItem = {
+          book_id: book.book_id,
+          title: book.title,
+          author: book.author,
+          price: book.price,
+          quantity: 1,
+          recommendation_score: book.score
+        };
+      } else if (typeof book === 'string') {
+        // Fallback: mood string from Story 1
+        if (currentCartItem && currentCartItem.title === book) {
+          currentCartItem.quantity += 1;
+        } else {
+          currentCartItem = { title: book, quantity: 1, price: 24.99 };
+        }
+      }
+      
       renderCartItem();
       openMiniCart();
+      
+      // Log analytics
+      console.log({ event: 'add_to_cart', book_id: currentCartItem.book_id, price: currentCartItem.price });
     }
 
     function removeItem(e){
@@ -304,11 +980,131 @@
     sameBilling.addEventListener('change',()=>{billingFields.style.display = sameBilling.checked ? 'none' : 'grid';});
     paymentRadios.forEach(radio=>radio.addEventListener('change', handlePaymentChange));
 
-    agentBtn.addEventListener('click',()=>{agentModal.classList.add('show')});
-    agentModal.addEventListener('click',(e)=>{if(e.target===agentModal)agentModal.classList.remove('show')});
-    agentNext.addEventListener('click',()=>{submitAgent()});
-    agentSkip.addEventListener('click',()=>{agentModal.classList.remove('show');openMiniCart()});
-    document.getElementById('hero-video').addEventListener('click',()=>{heroVideoCheckout()});
+    // Story 2.3: Subscription radio change listeners
+    document.querySelectorAll('input[name="sub"]').forEach(radio => {
+      radio.addEventListener('change', updateSubscriptionDisplay);
+    });
+
+    // Story 2.2: Recommendation modal close
+    recommendationCloseBtn.addEventListener('click', () => {
+      recommendationModal.classList.remove('show');
+    });
+
+    recommendationModal.addEventListener('click', (e) => {
+      if (e.target === recommendationModal) {
+        recommendationModal.classList.remove('show');
+      }
+    });
+
+    agentBtn.addEventListener('click', () => {
+      agentModal.classList.add('show');
+      initializeAgent();
+      agentInput.focus();
+    });
+
+    modalCloseBtn.addEventListener('click', () => {
+      closeAgentModal();
+    });
+
+    agentModal.addEventListener('click', (e) => {
+      if (e.target === agentModal) {
+        closeAgentModal();
+      }
+    });
+
+    agentModal.addEventListener('keydown', handleEscapeInModal);
+    agentModal.addEventListener('keydown', handleTabInModal);
+
+    agentInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        submitAgent();
+      }
+    });
+
+    agentNext.addEventListener('click', () => {
+      submitAgent();
+    });
+
+    function handleSkipFlow() {
+      // Record skip event
+      console.log({ event: 'skip_clicked', turn: agentState.currentTurn, session_id: agentState.selectedTrail });
+      
+      // Apply defaults for any missing fields
+      if (!agentState.recipient_type) agentState.recipient_type = 'self';
+      if (!agentState.surprise_level) agentState.surprise_level = 'balanced';
+      
+      // Infer mood from selected trail if not already set
+      if (!agentState.mood && agentState.selectedTrail) {
+        const trailToMood = {
+          'Cozy Mystery': 'cozy',
+          'Literary Romance': 'romantic',
+          'Epic Adventure': 'adventurous'
+        };
+        agentState.mood = trailToMood[agentState.selectedTrail] || 'balanced';
+      }
+      
+      // Mark skip mode
+      agentState.skip_mode = true;
+      
+      // Show skip confirmation message
+      const skipMsg = agentState.currentTurn > 0 
+        ? "No problem! I'll match you with the best pick based on what you've told me so far."
+        : "I'll match you with a popular pick tailored to the mood you selected.";
+      
+      const skipMsgEl = document.createElement('div');
+      skipMsgEl.className = 'chat-turn';
+      skipMsgEl.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">${skipMsg}</div>`;
+      chatHistory.appendChild(skipMsgEl);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+      
+      // Log skip completion
+      console.log({ 
+        event: 'skip_completed', 
+        turn: agentState.currentTurn,
+        fields_collected: {
+          recipient_type: agentState.recipient_type,
+          age_range: agentState.recipient_age_range,
+          genres: agentState.genres,
+          mood: agentState.mood,
+          avoid: agentState.avoid,
+          surprise_level: agentState.surprise_level
+        }
+      });
+      
+      // Transition to confirmation summary after brief delay
+      setTimeout(() => {
+        showConfirmationSection();
+      }, 800);
+    }
+
+    agentSkip.addEventListener('click', () => {
+      handleSkipFlow();
+    });
+
+    confirmationContinueBtn.addEventListener('click', () => {
+      // Story 2.1-2.2: Call decision engine to get recommendation
+      closeAgentModal();
+      setTimeout(() => {
+        callDecisionEngine();
+      }, 300);
+    });
+
+    confirmationEditBtn.addEventListener('click', () => {
+      // Reset to turn 0 to restart the flow
+      agentState.currentTurn = 0;
+      showAgentChatSection();
+      chatHistory.innerHTML = '';
+      advanceTurn();
+    });
+    const heroVideo = document.getElementById('hero-video');
+    heroVideo.addEventListener('click',()=>{heroVideoCheckout()});
+    heroVideo.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        heroVideoCheckout();
+      }
+    });
 
     function setOneTimePurchase(){
       const oneTime = document.querySelector('input[name="sub"][value="one-time"]');
@@ -324,7 +1120,11 @@
     }
 
     function handlePaymentChange(){
-      const method = document.querySelector('input[name="payment-method"]:checked').value;
+      const selected = document.querySelector('input[name="payment-method"]:checked');
+      if(!selected){
+        return;
+      }
+      const method = selected.value;
       creditCardFields.style.display = method === 'credit-card' ? 'grid' : 'none';
       pixInfo.style.display = method === 'pix' ? 'block' : 'none';
     }
@@ -339,92 +1139,427 @@
     }
 
     function handleCheckout(e){
+    // Story 3.2: Checkout functions
+    const checkoutModal = document.getElementById('checkout-modal');
+    const checkoutForm = document.getElementById('checkout-form');
+    const checkoutCloseBtn = document.getElementById('checkout-close');
+    const checkoutCancelBtn = document.getElementById('checkout-cancel-btn');
+    const checkoutSubmitBtn = document.getElementById('checkout-submit-btn');
+    const checkoutErrorContainer = document.getElementById('checkout-error-container');
+
+    function openCheckout() {
+      checkoutModal.style.display = 'flex';
+      updateCheckoutSummary();
+      resetCheckoutForm();
+      // Initialize Stripe elements (would be done here in production)
+      console.log('Checkout modal opened');
+    }
+
+    function closeCheckout() {
+      checkoutModal.style.display = 'none';
+      clearCheckoutErrors();
+    }
+
+    function updateCheckoutSummary() {
+      if (!currentCartItem) return;
+      
+      // Cart items display
+      const cartItemsDiv = document.getElementById('checkout-cart-items');
+      cartItemsDiv.innerHTML = `
+        <div>${currentCartItem.title} by ${currentCartItem.author || 'Unknown'}</div>
+        <div style="font-size:13px;color:#666;">$${currentCartItem.price.toFixed(2)} × ${currentCartItem.quantity}</div>
+      `;
+      
+      // Subscription display
+      const subDiv = document.getElementById('checkout-subscription-line');
+      const cadence = subscriptionState.cadence || 'monthly';
+      const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      subDiv.innerHTML = `${cadence.charAt(0).toUpperCase() + cadence.slice(1)} starting ${dateStr}`;
+      
+      // Total
+      const total = (currentCartItem.price * currentCartItem.quantity).toFixed(2);
+      document.getElementById('checkout-total-line').innerHTML = `<strong>Total: $${total}</strong>`;
+    }
+
+    function resetCheckoutForm() {
+      checkoutForm.reset();
+      clearCheckoutErrors();
+      document.getElementById('checkout-billing-different').checked = false;
+      document.getElementById('checkout-billing-fields').style.display = 'none';
+      document.querySelector('input[name="payment-method"][value="card"]').checked = true;
+      handleCheckoutPaymentChange();
+    }
+
+    function handleCheckoutPaymentChange() {
+      const method = document.querySelector('input[name="payment-method"]:checked').value;
+      document.getElementById('checkout-card-section').style.display = method === 'card' ? 'block' : 'none';
+      document.getElementById('checkout-pix-info').style.display = method === 'pix' ? 'block' : 'none';
+    }
+
+    function validateCheckoutForm() {
+      const errors = {};
+      
+      // Required fields
+      const name = document.getElementById('checkout-name').value.trim();
+      if (!name || name.length < 3) {
+        errors['checkout-name'] = 'Name required (min 3 characters)';
+      }
+      
+      const email = document.getElementById('checkout-email').value.trim();
+      if (!email || !email.includes('@')) {
+        errors['checkout-email'] = 'Valid email required';
+      }
+      
+      const phone = document.getElementById('checkout-phone').value.trim();
+      if (!phone || phone.replace(/\D/g, '').length < 10) {
+        errors['checkout-phone'] = 'Valid phone required';
+      }
+      
+      const street = document.getElementById('checkout-street').value.trim();
+      if (!street) {
+        errors['checkout-street'] = 'Street address required';
+      }
+      
+      const city = document.getElementById('checkout-city').value.trim();
+      if (!city) {
+        errors['checkout-city'] = 'City required';
+      }
+      
+      const state = document.getElementById('checkout-state').value.trim();
+      if (!state) {
+        errors['checkout-state'] = 'State required';
+      }
+      
+      const zip = document.getElementById('checkout-zip').value.trim();
+      if (!zip || zip.length < 3) {
+        errors['checkout-zip'] = 'Postal code required';
+      }
+      
+      const agree = document.getElementById('checkout-agree').checked;
+      if (!agree) {
+        errors['checkout-agree'] = 'You must agree to terms';
+      }
+      
+      return errors;
+    }
+
+    function clearCheckoutErrors() {
+      document.querySelectorAll('.error-message').forEach(el => {
+        el.textContent = '';
+      });
+      checkoutErrorContainer.style.display = 'none';
+      checkoutErrorContainer.textContent = '';
+    }
+
+    function showCheckoutErrors(errors) {
+      clearCheckoutErrors();
+      
+      Object.keys(errors).forEach(fieldId => {
+        const errorEl = document.getElementById(`error-${fieldId}`);
+        if (errorEl) {
+          errorEl.textContent = errors[fieldId];
+        }
+      });
+      
+      if (Object.keys(errors).length > 0) {
+        checkoutErrorContainer.textContent = 'Please fix the errors above';
+        checkoutErrorContainer.style.display = 'block';
+      }
+    }
+
+    function setCheckoutLoading(isLoading) {
+      const loadingState = document.getElementById('checkout-loading-state');
+      checkoutForm.style.display = isLoading ? 'none' : 'flex';
+      loadingState.style.display = isLoading ? 'block' : 'none';
+      checkoutSubmitBtn.disabled = isLoading;
+    }
+
+    async function handleCheckout(e) {
       e.preventDefault();
-      if(!currentCartItem){
-        alert('Please add an item to the cart before checking out.');
-        closeCheckout();
+      
+      // Validate form
+      const errors = validateCheckoutForm();
+      if (Object.keys(errors).length > 0) {
+        showCheckoutErrors(errors);
         return;
       }
-      const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-      const orderSummary = `${currentCartItem.quantity} × ${currentCartItem.mood} Book - ${document.getElementById('cart-total').textContent}`;
-      alert(`Order placed!\n${orderSummary}\nPayment: ${paymentMethod === 'pix' ? 'PIX' : 'Credit card'}`);
-      currentCartItem = null;
-      cartCount = 0;
-      cartCountEl.textContent = cartCount;
-      cartItemsEl.innerHTML = '<p style="color:#999;text-align:center;padding:32px 0;">Your cart is empty</p>';
-      document.getElementById('cart-total').textContent = '$0.00';
-      closeCheckout();
-      closeMiniCart();
-    }
-
-    async function submitAgent(){
-      const text = agentInput.value.trim();
-      if(!text) return;
-      const q = document.createElement('div');
-      q.className='chat-turn';
-      q.innerHTML = `<div class="chat-question">You</div><div class="chat-answer">${text}</div>`;
-      chatHistory.appendChild(q);
-      agentInput.value='';
-
-      const thinking = document.createElement('div');
-      thinking.className='chat-turn chat-thinking';
-      thinking.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Parsing your preferences...</div>`;
-      chatHistory.appendChild(thinking);
-      chatHistory.scrollTop = chatHistory.scrollHeight;
-
-      try{
-        const res = await fetch('http://127.0.0.1:5000/api/parse', {
+      
+      clearCheckoutErrors();
+      setCheckoutLoading(true);
+      
+      try {
+        // Build checkout data
+        const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        const checkout_data = {
+          cart_items: [{
+            book_id: currentCartItem.book_id || 'book-001',
+            title: currentCartItem.title,
+            author: currentCartItem.author || 'Unknown',
+            price: currentCartItem.price,
+            quantity: currentCartItem.quantity
+          }],
+          subscription: {
+            cadence: subscriptionState.cadence || 'monthly',
+            start_date: new Date().toISOString().split('T')[0],
+            initial_price: subscriptionState.initial_price || currentCartItem.price,
+            recurring_price: subscriptionState.recurring_price
+          },
+          shipping_address: {
+            name: document.getElementById('checkout-name').value,
+            street: document.getElementById('checkout-street').value,
+            city: document.getElementById('checkout-city').value,
+            state: document.getElementById('checkout-state').value,
+            postal_code: document.getElementById('checkout-zip').value
+          },
+          billing_address: null,
+          payment_method: paymentMethod,
+          stripe_token: 'tok_visa_mock',  // Mock token (would come from Stripe Elements in production)
+          email: document.getElementById('checkout-email').value,
+          phone: document.getElementById('checkout-phone').value,
+          idempotency_key: 'checkout-' + Date.now()
+        };
+        
+        // Call checkout API
+        const response = await fetch('/api/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
+          body: JSON.stringify(checkout_data)
         });
-        thinking.remove();
-
-        if(!res.ok){
-          throw new Error('Parse request failed');
-        }
-
-        const data = await res.json();
-        const parsed = {
-          recipient_type: data.recipient || 'self',
-          recipient_age_range: data.age_range || null,
-          genres: data.genres || [],
-          avoid: data.avoid || [],
-          surprise_level: data.surprise_level || null,
-          raw_input: data.raw || text
-        };
-
-        const resp = document.createElement('div');
-        resp.className='chat-turn';
-        const summary = [];
-        if(parsed.recipient_type) summary.push(`<strong>For:</strong> ${parsed.recipient_type}`);
-        if(parsed.recipient_age_range) summary.push(`<strong>Age:</strong> ${parsed.recipient_age_range}`);
-        if(parsed.genres.length) summary.push(`<strong>Genres:</strong> ${parsed.genres.join(', ')}`);
-        if(parsed.avoid.length) summary.push(`<strong>Avoid:</strong> ${parsed.avoid.join(', ')}`);
-        if(parsed.surprise_level) summary.push(`<strong>Surprise:</strong> ${parsed.surprise_level}`);
-        summary.push(`<em>Raw:</em> ${parsed.raw_input}`);
-
-        resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer"><div class="parsed-summary">${summary.join('<br/>')}</div></div>`;
-        chatHistory.appendChild(resp);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-
-        if(parsed.genres.includes('mystery') || parsed.genres.includes('thriller')){
-          addToCart('Cozy Mystery');
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          // Success
+          if (result.status === 'paid') {
+            window.location.href = `/success?order_id=${result.order_id}`;
+          } else if (result.status === 'awaiting_pix_confirmation') {
+            window.location.href = `/pix-qr?order_id=${result.order_id}`;
+          }
+        } else {
+          // Error
+          throw new Error(result.error || 'Checkout failed');
         }
       } catch (error) {
-        thinking.remove();
-        const resp = document.createElement('div');
-        resp.className='chat-turn';
-        resp.innerHTML = `<div class="chat-question">Agent</div><div class="chat-answer">Sorry, I couldn't reach the parser. Please try again.</div>`;
-        chatHistory.appendChild(resp);
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-        console.error(error);
+        console.error('Checkout error:', error);
+        checkoutErrorContainer.textContent = error.message || 'Payment failed. Please try again.';
+        checkoutErrorContainer.style.display = 'block';
+        setCheckoutLoading(false);
       }
     }
 
-    function showScreen(name){
-      // placeholder
+    // Checkout event listeners
+    checkoutCloseBtn.addEventListener('click', closeCheckout);
+    checkoutCancelBtn.addEventListener('click', closeCheckout);
+    checkoutModal.addEventListener('click', (e) => {
+      if (e.target === checkoutModal) closeCheckout();
+    });
+    checkoutForm.addEventListener('submit', handleCheckout);
+    
+    document.getElementById('checkout-billing-different').addEventListener('change', (e) => {
+      document.getElementById('checkout-billing-fields').style.display = 
+        e.target.checked ? 'block' : 'none';
+    });
+    
+    document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+      radio.addEventListener('change', handleCheckoutPaymentChange);
+    });
+
+handlePaymentChange();
+
+    // ========== Story 4.1: Login & Register Modal Functions ==========
+    const loginBtn = document.getElementById('login-btn');
+    const profileBtn = document.getElementById('profile-btn');
+    const loginModal = document.getElementById('login-modal');
+    const registerModal = document.getElementById('register-modal');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    
+    // Check if user is already logged in (on page load)
+    function checkAuthStatus() {
+      const token = localStorage.getItem('jwt_token');
+      if (token) {
+        loginBtn.style.display = 'none';
+        profileBtn.style.display = 'block';
+        // TODO: verify token validity with server
+      }
     }
+    
+    // Open login modal
+    loginBtn.addEventListener('click', () => {
+      loginModal.style.display = 'flex';
+      registerModal.style.display = 'none';
+    });
+    
+    // Open profile page (Story 4.1)
+    profileBtn.addEventListener('click', () => {
+      window.location.href = './profile.html';
+    });
+    
+    function openLoginModal() {
+      loginModal.style.display = 'flex';
+      registerModal.style.display = 'none';
+    }
+    
+    function closeLoginModal() {
+      loginModal.style.display = 'none';
+      clearLoginErrors();
+    }
+    
+    function openRegisterModal() {
+      registerModal.style.display = 'flex';
+      loginModal.style.display = 'none';
+    }
+    
+    function closeRegisterModal() {
+      registerModal.style.display = 'none';
+      clearRegisterErrors();
+    }
+    
+    function switchToRegister() {
+      loginModal.style.display = 'none';
+      registerModal.style.display = 'flex';
+    }
+    
+    function switchToLogin() {
+      registerModal.style.display = 'none';
+      loginModal.style.display = 'flex';
+    }
+    
+    // Handle login form submission (Story 4.1)
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      const loadingState = document.getElementById('login-loading-state');
+      const errorContainer = document.getElementById('login-error-container');
+      
+      loadingState.style.display = 'block';
+      errorContainer.style.display = 'none';
+      
+      try {
+        const response = await fetch('/api/users/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.jwt_token) {
+          // Store token
+          localStorage.setItem('jwt_token', data.jwt_token);
+          localStorage.setItem('user_id', data.user_id);
+          localStorage.setItem('user_email', data.email);
+          
+          // Update UI
+          loginBtn.style.display = 'none';
+          profileBtn.style.display = 'block';
+          
+          // Close modal
+          closeLoginModal();
+          
+          // Show success message
+          alert('Welcome back, ' + data.name + '!');
+        } else {
+          errorContainer.textContent = data.error || 'Login failed. Please check your credentials.';
+          errorContainer.style.display = 'block';
+        }
+      } catch (error) {
+        errorContainer.textContent = 'Login error: ' + error.message;
+        errorContainer.style.display = 'block';
+      } finally {
+        loadingState.style.display = 'none';
+      }
+    });
+    
+    // Handle register form submission (Story 4.1)
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      const passwordConfirm = document.getElementById('register-password-confirm').value;
+      
+      const errorContainer = document.getElementById('register-error-container');
+      errorContainer.style.display = 'none';
+      
+      // Validate passwords match
+      if (password !== passwordConfirm) {
+        errorContainer.textContent = 'Passwords do not match';
+        errorContainer.style.display = 'block';
+        return;
+      }
+      
+      const loadingState = document.getElementById('register-loading-state');
+      loadingState.style.display = 'block';
+      
+      try {
+        const response = await fetch('/api/users/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.jwt_token) {
+          // Store token
+          localStorage.setItem('jwt_token', data.jwt_token);
+          localStorage.setItem('user_id', data.user_id);
+          localStorage.setItem('user_email', data.email);
+          
+          // Update UI
+          loginBtn.style.display = 'none';
+          profileBtn.style.display = 'block';
+          
+          // Close modal
+          closeRegisterModal();
+          
+          // Show success message
+          alert('Welcome, ' + data.name + '! Account created successfully.');
+          
+          // Redirect to profile to complete preferences
+          setTimeout(() => {
+            window.location.href = './profile.html';
+          }, 1000);
+        } else {
+          errorContainer.textContent = data.error || 'Registration failed. Please try again.';
+          errorContainer.style.display = 'block';
+        }
+      } catch (error) {
+        errorContainer.textContent = 'Registration error: ' + error.message;
+        errorContainer.style.display = 'block';
+      } finally {
+        loadingState.style.display = 'none';
+      }
+    });
+    
+    function clearLoginErrors() {
+      document.getElementById('login-error-container').style.display = 'none';
+      document.getElementById('login-loading-state').style.display = 'none';
+      document.getElementById('login-form').reset();
+    }
+    
+    function clearRegisterErrors() {
+      document.getElementById('register-error-container').style.display = 'none';
+      document.getElementById('register-loading-state').style.display = 'none';
+      document.getElementById('register-form').reset();
+    }
+    
+    // Initialize auth status on page load
+    checkAuthStatus();
+    
+    // Close modals on overlay click
+    document.getElementById('login-modal').addEventListener('click', (e) => {
+      if (e.target === loginModal) closeLoginModal();
+    });
+    
+    document.getElementById('register-modal').addEventListener('click', (e) => {
+      if (e.target === registerModal) closeRegisterModal();
+    });
 
   </script>
 </body>

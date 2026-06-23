@@ -442,3 +442,98 @@
 2026-06-23 12:28:58,627 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:28:58] "POST /api/ai/decide HTTP/1.1" 200 -
 2026-06-23 12:28:58,645 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:28:58] "GET /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1" 200 -
 2026-06-23 12:28:58,656 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:28:58] "[31m[1mPATCH /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1[0m" 400 -
+2026-06-23 12:30:41,407 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-06-23 12:30:41,408 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2026-06-23 12:30:53,015 - __main__ - INFO - User registered: test.user@blind-date-book.com
+2026-06-23 12:30:53,016 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:53] "[35m[1mPOST /api/users/register HTTP/1.1[0m" 201 -
+2026-06-23 12:30:53,030 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:53] "[31m[1mPOST /api/users/register HTTP/1.1[0m" 400 -
+2026-06-23 12:30:53,042 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:53] "[31m[1mPOST /api/users/register HTTP/1.1[0m" 400 -
+2026-06-23 12:30:53,053 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:53] "[31m[1mPOST /api/users/register HTTP/1.1[0m" 400 -
+2026-06-23 12:30:53,618 - __main__ - INFO - User registered: login-test-1782228653.061102@test.com
+2026-06-23 12:30:53,618 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:53] "[35m[1mPOST /api/users/register HTTP/1.1[0m" 201 -
+2026-06-23 12:30:53,626 - __main__ - INFO - Login attempt for login-test-1782228653.061102@test.com. Users in storage: ['test.user@blind-date-book.com', 'login-test-1782228653.061102@test.com']
+2026-06-23 12:30:54,169 - __main__ - INFO - User logged in: login-test-1782228653.061102@test.com
+2026-06-23 12:30:54,170 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "POST /api/users/login HTTP/1.1" 200 -
+2026-06-23 12:30:54,189 - __main__ - INFO - Login attempt for demo@blind-date-book.com. Users in storage: ['test.user@blind-date-book.com', 'login-test-1782228653.061102@test.com']
+2026-06-23 12:30:54,191 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPOST /api/users/login HTTP/1.1[0m" 401 -
+2026-06-23 12:30:54,214 - __main__ - INFO - Preferences saved for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,216 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,264 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1[0m" 400 -
+2026-06-23 12:30:54,281 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1[0m" 400 -
+2026-06-23 12:30:54,293 - __main__ - INFO - Preferences saved for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,293 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,302 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1" 200 -
+2026-06-23 12:30:54,319 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/preferences HTTP/1.1[0m" 400 -
+2026-06-23 12:30:54,337 - __main__ - INFO - Book book-123 added to avoid-list for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,338 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,351 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1[0m" 400 -
+2026-06-23 12:30:54,373 - __main__ - INFO - Book book-123 added to avoid-list for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,374 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,385 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1" 200 -
+2026-06-23 12:30:54,404 - __main__ - INFO - Book book-123 added to avoid-list for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,409 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,418 - __main__ - INFO - Book book-123 removed from avoid-list for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,425 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "DELETE /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list/book-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,449 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/orders HTTP/1.1" 200 -
+2026-06-23 12:30:54,475 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/orders?limit=5&offset=0 HTTP/1.1" 200 -
+2026-06-23 12:30:54,498 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/orders?sort=date&order=desc HTTP/1.1" 200 -
+2026-06-23 12:30:54,515 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/orders?status=delivered HTTP/1.1" 200 -
+2026-06-23 12:30:54,530 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/excluded-books HTTP/1.1" 200 -
+2026-06-23 12:30:54,552 - __main__ - INFO - Book book-duplicate-test added to avoid-list for user 3008aab4-a06f-4007-88d1-2b0b06ffe481
+2026-06-23 12:30:54,553 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[35m[1mPOST /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/avoid-list HTTP/1.1[0m" 201 -
+2026-06-23 12:30:54,567 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/users/3008aab4-a06f-4007-88d1-2b0b06ffe481/excluded-books HTTP/1.1" 200 -
+2026-06-23 12:30:54,584 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "GET /api/subscriptions/sub-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,600 - __main__ - INFO - Subscription sub-test-123 pauseed
+2026-06-23 12:30:54,601 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "PATCH /api/subscriptions/sub-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,619 - __main__ - INFO - Subscription sub-test-123 pauseed
+2026-06-23 12:30:54,627 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "PATCH /api/subscriptions/sub-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,643 - __main__ - INFO - Subscription sub-test-123 resumeed
+2026-06-23 12:30:54,644 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "PATCH /api/subscriptions/sub-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,660 - __main__ - INFO - Subscription sub-test-123 canceled
+2026-06-23 12:30:54,661 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "PATCH /api/subscriptions/sub-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:54,684 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "[31m[1mPATCH /api/subscriptions/sub-test-123 HTTP/1.1[0m" 400 -
+2026-06-23 12:30:54,699 - __main__ - INFO - User 3008aab4-a06f-4007-88d1-2b0b06ffe481 excluded books: ['book-duplicate-test', 'book-001', 'book-123', 'book-003', 'book-002']
+2026-06-23 12:30:54,705 - __main__ - INFO - {"event_id": "3b7fb2e1-a101-4dd5-9ed8-c0cf5d45e7da", "timestamp": "2026-06-23T15:30:54.705159Z", "session_id": "test-session-1782228654.693821", "user_id": "3008aab4-a06f-4007-88d1-2b0b06ffe481", "event_type": "decision_success", "book_id": "book-004", "score": 0.2, "confidence": 0.2, "excluded_books_count": 5, "excluded_books": ["book-duplicate-test", "book-001", "book-123", "book-003", "book-002"], "preferences": {"recipient_age_range": "25-45", "genres": ["Mystery", "Thriller"], "mood": "cozy"}, "response_time_ms": 3}
+2026-06-23 12:30:54,713 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "POST /api/ai/decide HTTP/1.1" 200 -
+2026-06-23 12:30:54,730 - __main__ - INFO - User 3008aab4-a06f-4007-88d1-2b0b06ffe481 excluded books: ['book-duplicate-test', 'book-001', 'book-123', 'book-003', 'book-002']
+2026-06-23 12:30:54,734 - __main__ - INFO - {"event_id": "a20b200e-1f5e-4210-ba21-75c646f4f309", "timestamp": "2026-06-23T15:30:54.734240Z", "session_id": "test-session-1782228654.723841", "user_id": "3008aab4-a06f-4007-88d1-2b0b06ffe481", "event_type": "decision_success", "book_id": "book-004", "score": 0.2, "confidence": 0.2, "excluded_books_count": 5, "excluded_books": ["book-duplicate-test", "book-001", "book-123", "book-003", "book-002"], "preferences": {"recipient_age_range": "25-45", "genres": ["Mystery"], "mood": "cozy"}, "response_time_ms": 3}
+2026-06-23 12:30:54,735 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:54] "POST /api/ai/decide HTTP/1.1" 200 -
+2026-06-23 12:30:55,312 - __main__ - INFO - User registered: e2e-flow-1782228654.747087@test.com
+2026-06-23 12:30:55,313 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "[35m[1mPOST /api/users/register HTTP/1.1[0m" 201 -
+2026-06-23 12:30:55,320 - __main__ - INFO - Preferences saved for user 4f433763-8318-4a2c-a727-fadd71d654fd
+2026-06-23 12:30:55,322 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "[35m[1mPOST /api/users/4f433763-8318-4a2c-a727-fadd71d654fd/preferences HTTP/1.1[0m" 201 -
+2026-06-23 12:30:55,337 - __main__ - INFO - User 4f433763-8318-4a2c-a727-fadd71d654fd excluded books: ['book-003', 'book-002', 'book-001']
+2026-06-23 12:30:55,346 - __main__ - INFO - {"event_id": "3fd86fc2-1136-41ee-9085-b71e1ee51eca", "timestamp": "2026-06-23T15:30:55.346401Z", "session_id": "473b97ad-296c-4573-90d6-ebd8ab6b37a1", "user_id": "4f433763-8318-4a2c-a727-fadd71d654fd", "event_type": "decision_success", "book_id": "book-004", "score": 0.2, "confidence": 0.2, "excluded_books_count": 3, "excluded_books": ["book-003", "book-002", "book-001"], "preferences": {"recipient_age_range": "25-65", "genres": ["Mystery", "Thriller"], "mood": "cozy"}, "response_time_ms": 9}
+2026-06-23 12:30:55,347 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "POST /api/ai/decide HTTP/1.1" 200 -
+2026-06-23 12:30:55,356 - __main__ - INFO - Book book-004 added to avoid-list for user 4f433763-8318-4a2c-a727-fadd71d654fd
+2026-06-23 12:30:55,358 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "[35m[1mPOST /api/users/4f433763-8318-4a2c-a727-fadd71d654fd/avoid-list HTTP/1.1[0m" 201 -
+2026-06-23 12:30:55,377 - __main__ - INFO - User 4f433763-8318-4a2c-a727-fadd71d654fd excluded books: ['book-003', 'book-002', 'book-004', 'book-001']
+2026-06-23 12:30:55,380 - __main__ - INFO - {"event_id": "cf708f71-8c88-48f4-9f79-4b2310e0de03", "timestamp": "2026-06-23T15:30:55.380762Z", "session_id": "440db571-4395-4ef0-8bc7-a124b6b2b980", "user_id": "4f433763-8318-4a2c-a727-fadd71d654fd", "event_type": "decision_success", "book_id": "book-005", "score": 0.2, "confidence": 0.2, "excluded_books_count": 4, "excluded_books": ["book-003", "book-002", "book-004", "book-001"], "preferences": {"recipient_age_range": "25-65", "genres": ["Mystery", "Thriller"], "mood": "cozy"}, "response_time_ms": 6}
+2026-06-23 12:30:55,382 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "POST /api/ai/decide HTTP/1.1" 200 -
+2026-06-23 12:30:55,402 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "GET /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:55,412 - __main__ - INFO - Subscription sub-lifecycle-test-123 pauseed
+2026-06-23 12:30:55,413 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "PATCH /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:55,424 - __main__ - INFO - Subscription sub-lifecycle-test-123 resumeed
+2026-06-23 12:30:55,425 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "PATCH /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1" 200 -
+2026-06-23 12:30:55,438 - __main__ - INFO - Subscription sub-lifecycle-test-123 canceled
+2026-06-23 12:30:55,439 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:30:55] "PATCH /api/subscriptions/sub-lifecycle-test-123 HTTP/1.1" 200 -
+2026-06-23 12:31:52,909 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:31:52] "GET /static/index.html HTTP/1.1" 200 -
+2026-06-23 12:31:52,933 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:31:52] "GET /static/styles.css HTTP/1.1" 200 -
+2026-06-23 12:31:52,954 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:31:52] "GET /static/logo-blind-date-book.svg HTTP/1.1" 200 -
+2026-06-23 12:32:14,630 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:14,631 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:14] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:32:22,180 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:22,181 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:22] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:32:34,039 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:34,041 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:34] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:32:41,189 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:41,192 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:41] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:32:49,799 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:49,800 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:49] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:32:59,025 - __main__ - ERROR - Agent parse error: cannot unpack non-iterable NoneType object
+2026-06-23 12:32:59,026 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:32:59] "POST /api/agent/parse HTTP/1.1" 200 -
+2026-06-23 12:33:09,422 - __main__ - INFO - {"event_id": "f87859a0-6873-4242-bcd3-3a82669660be", "timestamp": "2026-06-23T15:33:09.422432Z", "session_id": "session-1782228789415", "user_id": null, "event_type": "decision_success", "book_id": "book-001", "score": 0.35, "confidence": 0.35, "excluded_books_count": 0, "excluded_books": [], "preferences": {"recipient_type": "self", "recipient_age_range": "unknown", "genres": [], "avoid": [], "surprise_level": "balanced", "mood": null}, "response_time_ms": 2}
+2026-06-23 12:33:09,423 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:33:09] "POST /api/ai/decide HTTP/1.1" 200 -
+2026-06-23 12:33:43,853 - __main__ - INFO - {"event_id": "3287cc03-3ce6-41c6-aaf5-2fdf2cd1c1f0", "timestamp": "2026-06-23T15:33:43.853152Z", "session_id": "session-1782228823846", "user_id": null, "event_type": "decision_success", "book_id": "book-001", "score": 0.35, "confidence": 0.35, "excluded_books_count": 0, "excluded_books": [], "preferences": {"recipient_type": "self", "recipient_age_range": "unknown", "genres": [], "avoid": [], "surprise_level": "balanced", "mood": null}, "response_time_ms": 1}
+2026-06-23 12:33:43,855 - werkzeug - INFO - 127.0.0.1 - - [23/Jun/2026 12:33:43] "POST /api/ai/decide HTTP/1.1" 200 -

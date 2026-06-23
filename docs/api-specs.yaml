@@ -18,24 +18,50 @@ components:
       properties:
         recipient_type:
           type: string
-          enum: [self, gift]
+          enum: [self, parent, sibling, friend, partner, colleague, gift, other]
+          description: 'Recipient type inferred from input (default: self)'
         recipient_age_range:
           type: string
-          description: age bucket like 'under-12', '25-34'
+          enum: [teen, '20s', '30s', '40s', '50s', '60+']
+          description: 'Normalized age bucket (null if not detected)'
+          nullable: true
         genres:
           type: array
           items:
             type: string
+          description: 'List of detected genres (e.g., mystery, romance, sci-fi)'
         avoid:
           type: array
           items:
             type: string
+          description: 'List of content/themes to avoid'
         surprise_level:
           type: string
-          enum: [light_hint, moderate, full]
+          enum: [safe, balanced, wildcard]
+          description: 'Surprise intensity (default: balanced)'
+        mood:
+          type: string
+          nullable: true
+          description: 'Detected mood or occasion (e.g., cozy, adventurous)'
         raw_input:
           type: string
-      required: [raw_input]
+          description: 'Original unmodified user input'
+      required: [recipient_type, genres, avoid, surprise_level, raw_input]
+
+    Ambiguity:
+      type: object
+      properties:
+        reason:
+          type: string
+          enum: [MISSING_RECIPIENT, AMBIGUOUS_AGE, AGE_OUT_OF_RANGE, GENRE_UNRECOGNIZED, CONFLICTING_MOOD, PARTIAL_PARSE, LOW_CONFIDENCE, EMPTY_INPUT, PARSE_ERROR]
+          description: 'Reason code for ambiguity'
+        value:
+          type: string
+          description: 'The problematic value that triggered this ambiguity'
+        suggestion:
+          type: string
+          description: 'Suggested clarification question for the user'
+      required: [reason, value, suggestion]
 
     RecipientDetails:
       type: object
@@ -129,7 +155,7 @@ paths:
               example-1: { $ref: '#/components/examples/ParseExample' }
       responses:
         '200':
-          description: Parsed preference object and follow-up
+          description: Parsed preference object with confidence and ambiguities for clarification
           content:
             application/json:
               schema:
@@ -137,24 +163,104 @@ paths:
                 properties:
                   parsed:
                     $ref: '#/components/schemas/PreferenceObject'
+                  recipient_type:
+                    type: string
+                    description: 'Convenience field (same as parsed.recipient_type)'
+                  age_range:
+                    type: string
+                    nullable: true
+                    description: 'Convenience field (same as parsed.recipient_age_range)'
+                  genres:
+                    type: array
+                    items:
+                      type: string
+                    description: 'Convenience field (same as parsed.genres)'
+                  avoid:
+                    type: array
+                    items:
+                      type: string
+                    description: 'Convenience field (same as parsed.avoid)'
+                  surprise_level:
+                    type: string
+                    description: 'Convenience field (same as parsed.surprise_level)'
+                  raw:
+                    type: string
+                    description: 'Original input text'
+                  confidence:
+                    type: number
+                    format: float
+                    description: 'Confidence score 0.0–1.0 indicating parse completeness'
+                    minimum: 0.0
+                    maximum: 1.0
+                  parser_version:
+                    type: string
+                    description: 'Version of parser used (e.g., "1.0")'
+                  ambiguities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ambiguity'
+                    description: 'Array of detected ambiguities requiring clarification'
+                  response_time_ms:
+                    type: integer
+                    description: 'Server processing time in milliseconds'
+                  parsed_at:
+                    type: string
+                    format: date-time
+                    description: 'ISO8601 timestamp of parse completion'
                   follow_up_question:
                     type: string
                     nullable: true
+                    description: 'Optional follow-up question (deprecated, use ambiguities)'
                   suggestions:
                     type: array
                     items:
                       type: string
+                    description: 'Optional suggestions (deprecated, use ambiguities)'
               examples:
                 parsed-sample:
                   value:
                     parsed:
-                      recipient_type: gift
-                      recipient_age_range: under-12
-                      genres: ["children","adventure","dinosaurs"]
-                      avoid: ["horror","explicit"]
-                      surprise_level: light_hint
-                      raw_input: "I'm buying for my 8-year-old son who loves dinosaurs and adventure. No scary stuff."
+                      recipient_type: sibling
+                      recipient_age_range: teen
+                      genres: [fantasy, adventure]
+                      avoid: []
+                      surprise_level: balanced
+                      mood: adventurous
+                      raw_input: "Gift for my 8-year-old niece who loves fantasy"
+                    recipient_type: sibling
+                    age_range: teen
+                    genres: [fantasy, adventure]
+                    avoid: []
+                    surprise_level: balanced
+                    raw: "Gift for my 8-year-old niece who loves fantasy"
+                    confidence: 0.89
+                    parser_version: "1.0"
+                    ambiguities:
+                      - reason: AGE_OUT_OF_RANGE
+                        value: "8"
+                        suggestion: "Did you mean 'tween' (8-12) or 'teen' (13-19)?"
+                    response_time_ms: 142
+                    parsed_at: "2026-06-23T10:42:11Z"
                     follow_up_question: null
+                    suggestions: []
+                ambiguous-sample:
+                  value:
+                    parsed:
+                      recipient_type: self
+                      recipient_age_range: null
+                      genres: []
+                      avoid: []
+                      surprise_level: balanced
+                      mood: null
+                      raw_input: "Just a book"
+                    confidence: 0.30
+                    parser_version: "1.0"
+                    ambiguities:
+                      - reason: PARTIAL_PARSE
+                        value: "Just a book"
+                        suggestion: "Could you give me a bit more detail about who this is for and what they like?"
+                    response_time_ms: 89
+                    parsed_at: "2026-06-23T10:42:12Z"
 
   /api/ai/decide:
     post:

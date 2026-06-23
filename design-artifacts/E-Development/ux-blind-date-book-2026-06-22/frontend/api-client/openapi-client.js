@@ -12,7 +12,7 @@
   };
   ApiClient.prototype.parseAgent = function(text, session_id){
     var self = this;
-    return fetch(this.baseUrl + '/api/parse', { method: 'POST', headers: this._headers(), body: JSON.stringify({ text: text, session_id: session_id }) })
+    return fetch(this.baseUrl + '/api/agent/parse', { method: 'POST', headers: this._headers(), body: JSON.stringify({ text: text, session_id: session_id }) })
       .then(function(res){ if(!res.ok) throw new Error('parseAgent failed: ' + res.status); return res.json(); });
   };
   ApiClient.prototype.aiDecide = function(payload){
