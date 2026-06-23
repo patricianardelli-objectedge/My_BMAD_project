@@ -1,0 +1,15 @@
+{
+  "timestamp": "2026-06-23T11:50:29.627806",
+  "backend_url": "http://127.0.0.1:5000",
+  "frontend_url": "http://127.0.0.1:3000",
+  "tests": {
+    "api_tests": {
+      "status": "FAILED",
+      "file": "C:\\Patricia\\BMAD_project\\_bmad-output\\implementation-artifacts\\tests\\test_api_endpoints.py"
+    },
+    "e2e_tests": {
+      "status": "PASSED",
+      "file": "C:\\Patricia\\BMAD_project\\_bmad-output\\implementation-artifacts\\tests\\test_e2e.js"
+    }
+  }
+}

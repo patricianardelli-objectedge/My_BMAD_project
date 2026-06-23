@@ -1,6 +1,9 @@
 ---
 stepsCompleted:
   - step-01-validate-prerequisites
+  - step-02-design-epics
+  - step-03-create-stories
+  - step-04-final-validation
 inputDocuments:
   - _bmad-output/implementation-artifacts/prd-blind-date-book.md
   - _bmad-output/implementation-artifacts/architecture/architecture.md
@@ -101,33 +104,410 @@ UX-DR10: Provide accessible text link styling with emerald text, gold underline 
 
 ### FR Coverage Map
 
-{{requirements_coverage_map}}
+FR1: Epic 1 - Homepage-first discovery with story-trail selection and direct path to purchase.
+
+FR2: Epic 1 - Conversational preference collector modal for detailed preference capture.
+
+FR3: Epic 1 - Free-text gift input parsing into structured preference fields.
+
+FR4: Epic 2 - Rule-based AI decision engine with scored candidate selection.
+
+FR5: Epic 2 - One-time and subscription cadence options in cart and order flow.
+
+FR6: Epic 2 - Mini cart slide-over with gift kit summary and total.
+
+FR7: Epic 3 - Direct checkout flow with minimal required shipping/billing/payment fields.
+
+FR8: Epic 4 - User profile storing preferences, subscription settings, and delivery history.
+
+FR9: Epic 4 - Duplicate prevention based on delivered title history.
+
+FR10: Epic 5 - Blind date kit product and packaging definition in order workflow.
+
+FR11: Epic 5 - Operations packing checklist and fulfillment guidance for pilot orders.
+
+FR12: Epic 4 - Editable and removable preference and avoid-list profile controls.
+
+FR13: Epic 1 - Agent skip flow to default matching or manual profile entry.
+
+FR14: Epic 1 - Ambiguous parse event logging for pilot tuning.
 
 ## Epic List
 
-{{epics_list}}
+### Epic 1: Discovery and Preference Capture
+Shoppers discover the experience from the homepage, choose a story trail, and provide clear preferences via conversational input or skip path.
+**FRs covered:** FR1, FR2, FR3, FR13, FR14
+
+### Epic 2: AI Match and Cart Conversion
+Shoppers receive a transparent surprise recommendation, add a gift kit quickly, and configure one-time or subscription purchase options.
+**FRs covered:** FR4, FR5, FR6
+
+### Epic 3: Fast and Secure Checkout
+Shoppers complete payment from the homepage flow with minimal friction using secure tokenized payment methods.
+**FRs covered:** FR7
+
+### Epic 4: Profiles and Duplicate Prevention
+Returning users manage preferences and subscription controls while the system prevents duplicate book deliveries.
+**FRs covered:** FR8, FR9, FR12
+
+### Epic 5: Fulfillment and Pilot Operations
+Operations teams assemble and ship consistent blind date kits with documented fulfillment guidance and order metadata.
+**FRs covered:** FR10, FR11
 
 <!-- Repeat for each epic in epics_list (N = 1, 2, 3...) -->
 
-## Epic {{N}}: {{epic_title_N}}
+## Epic 1: Discovery and Preference Capture
 
-{{epic_goal_N}}
+Deliver the homepage-first discovery and conversational preference experience so a first-time shopper can begin and complete gift intent capture quickly.
 
-<!-- Repeat for each story (M = 1, 2, 3...) within epic N -->
+### Story 1.1: Homepage Hero and Story-Trail Card Selection
 
-### Story {{N}}.{{M}}: {{story_title_N_M}}
-
-As a {{user_type}},
-I want {{capability}},
-So that {{value_benefit}}.
+As a first-time visitor,
+I want to choose a mood-based story trail directly from the homepage,
+So that I can begin a surprise purchase without browsing a catalog.
 
 **Acceptance Criteria:**
 
-<!-- for each AC on this story -->
+**Given** a visitor lands on the homepage
+**When** page assets load
+**Then** the hero media is visible in under 3 seconds on baseline broadband
+**And** story-trail cards render with accessible text contrast and keyboard focus states.
 
-**Given** {{precondition}}
-**When** {{action}}
-**Then** {{expected_outcome}}
-**And** {{additional_criteria}}
+**Given** the visitor interacts with a story-trail card
+**When** they click or press Enter on the primary CTA
+**Then** the system stores the selected trail in session state
+**And** opens the preference collector entry point without requiring catalog navigation.
 
-<!-- End story repeat -->
+**References:** FR1, NFR2, NFR3, UX-DR2, UX-DR6, UX-DR9
+**Source Hints:** PRD sections 4, 8.1, 9; UX DESIGN sections Story Card, Layout & Spacing.
+
+### Story 1.2: Conversational Agent Modal and Guided Preference Flow
+
+As a shopper selecting a gift,
+I want a conversational modal that gathers recipient and taste preferences in plain language,
+So that the recommendation engine can personalize the surprise.
+
+**Acceptance Criteria:**
+
+**Given** a shopper starts the preference flow
+**When** the modal opens
+**Then** the modal appears in under 1 second with accessible focus management
+**And** supports keyboard-only navigation and reduced-motion behavior.
+
+**Given** the shopper answers prompts
+**When** the flow is completed in 5-7 turns
+**Then** the system captures recipient type, age band, genres, mood, surprise level, and avoid preferences
+**And** displays a confirmation summary before continuing.
+
+**References:** FR2, NFR1, NFR3, UX-DR3, UX-DR7, UX-DR10
+**Source Hints:** PRD sections 7, 8.1, 9; Architecture sections 1-3.
+
+### Story 1.3: Parse Service Integration with Ambiguity Logging
+
+As a product team,
+I want free-text user input parsed into structured preferences with ambiguity logging,
+So that the pilot can improve matching quality over time.
+
+**Acceptance Criteria:**
+
+**Given** the frontend submits free-text gift intent
+**When** `/api/agent/parse` receives the request
+**Then** the API returns a structured preference object aligned to the OpenAPI contract
+**And** the parser output is versioned and test-covered.
+
+**Given** user input is ambiguous or partially parsed
+**When** parser confidence or rule coverage is insufficient
+**Then** the event is logged with reason codes for human review
+**And** the UX receives a safe clarification prompt instead of silent failure.
+
+**References:** FR3, FR14, Additional Requirements 1-2, NFR5
+**Source Hints:** PRD sections 7, 11; Architecture sections 2-3, 9; docs/api-specs.yaml.
+
+### Story 1.4: Agent Skip Flow and Default Matching Entry
+
+As a shopper in a hurry,
+I want to skip the conversational flow and continue with defaults or manual entry,
+So that I can still complete a purchase with minimal friction.
+
+**Acceptance Criteria:**
+
+**Given** the modal is open
+**When** the shopper selects Skip
+**Then** the system offers default matching and manual profile entry paths
+**And** records that skip mode was chosen.
+
+**Given** skip mode is used
+**When** the shopper continues to recommendation/cart
+**Then** the flow proceeds without blocked fields
+**And** unresolved preference values are marked as optional or unknown.
+
+**References:** FR13, NFR2, NFR5
+**Source Hints:** PRD sections 7, 8.1.
+
+## Epic 2: AI Match and Cart Conversion
+
+Deliver recommendation transparency and mini-cart conversion so users can trust and buy the proposed surprise kit quickly.
+
+### Story 2.1: Rule-Based Decision Engine with Candidate Scoring
+
+As a shopper,
+I want the system to choose a best-match book using my preferences and safety constraints,
+So that the surprise feels relevant and appropriate.
+
+**Acceptance Criteria:**
+
+**Given** structured preferences and optional exclusion history
+**When** `/api/ai/decide` is invoked
+**Then** the engine ranks candidates and returns a selected book with rationale metadata
+**And** respects age appropriateness and avoid lists.
+
+**Given** the same input is replayed for audit
+**When** decision logs are reviewed
+**Then** reason fields show which rules influenced ranking
+**And** metadata can be persisted on order records.
+
+**References:** FR4, Additional Requirements 1, 7, 9, NFR9
+**Source Hints:** PRD sections 8.2, 9; Architecture sections 2-3.
+
+### Story 2.2: Recommendation Summary Card and One-Click Add-to-Cart
+
+As a shopper,
+I want a transparent recommendation summary and a one-click add action,
+So that I can trust the pick and move to checkout quickly.
+
+**Acceptance Criteria:**
+
+**Given** a decision result exists
+**When** the recommendation card renders
+**Then** it displays genre fit, mood fit, and safety checks in human-readable language
+**And** provides a single primary add-to-cart CTA.
+
+**Given** the shopper clicks add-to-cart
+**When** cart state updates
+**Then** the blind date kit and selected book data appear in mini cart
+**And** quantity and price totals are recalculated immediately.
+
+**References:** FR4, FR6, NFR2, UX-DR5
+**Source Hints:** PRD sections 8.1, 9; UX DESIGN button and component specs.
+
+### Story 2.3: Mini Cart Subscription Options and Pricing
+
+As a shopper,
+I want to choose one-time, monthly, bi-weekly, or three-month delivery,
+So that the purchase matches how often I want to gift or receive books.
+
+**Acceptance Criteria:**
+
+**Given** mini cart is open
+**When** subscription options are displayed
+**Then** one-time and three subscription cadence options are selectable
+**And** selected cadence updates order summary labels and totals.
+
+**Given** a subscription cadence is selected
+**When** user proceeds to checkout
+**Then** cadence is persisted into checkout payload
+**And** cart state remains consistent on refresh/back navigation.
+
+**References:** FR5, FR6, UX-DR4
+**Source Hints:** PRD sections 8.1, 8.2; Architecture sections 3, 8.
+
+## Epic 3: Fast and Secure Checkout
+
+Deliver an end-to-end checkout path that is low-friction for users and secure for payment operations.
+
+### Story 3.1: Checkout API with Tokenized Card and PIX Support
+
+As a shopper,
+I want secure payment options that do not expose my raw card details,
+So that I can checkout safely with my preferred payment method.
+
+**Acceptance Criteria:**
+
+**Given** checkout payload is submitted
+**When** `/api/checkout` processes payment details
+**Then** the backend accepts tokenized card methods and PIX payloads only
+**And** rejects raw PAN/card-number fields.
+
+**Given** payment provider responses are returned
+**When** order processing completes
+**Then** the API returns order id and payment status
+**And** emits webhook-compatible metadata for async reconciliation.
+
+**References:** FR7, Additional Requirements 4, NFR6
+**Source Hints:** PRD sections 8.2, 9; Architecture sections 1-4.
+
+### Story 3.2: Direct Checkout UX from Mini Cart
+
+As a shopper,
+I want to enter shipping and billing details with minimal fields,
+So that I can complete checkout in under two clicks from mini cart.
+
+**Acceptance Criteria:**
+
+**Given** a ready mini cart state
+**When** user clicks Complete Checkout
+**Then** checkout opens directly from mini cart with required fields only
+**And** interaction path from cart to payment is no more than two clicks.
+
+**Given** required fields are valid
+**When** user submits checkout
+**Then** an order confirmation state is shown with next steps
+**And** checkout completion instrumentation is logged.
+
+**References:** FR7, NFR2, NFR8, UX-DR4
+**Source Hints:** PRD sections 8.1, 9.
+
+### Story 3.3: Background Processing for Renewals and Webhooks
+
+As an operations team,
+I want background workers to process renewals and payment/fulfillment webhooks,
+So that recurring orders and event handling remain reliable.
+
+**Acceptance Criteria:**
+
+**Given** recurring subscriptions and provider callbacks exist
+**When** worker queues execute scheduled tasks
+**Then** renewal jobs and webhook events are processed idempotently
+**And** failures are retried with structured error logging.
+
+**Given** operational monitoring is enabled
+**When** queue processing health is reviewed
+**Then** key metrics and traceable logs are available for parse, decide, and checkout paths
+**And** alert thresholds can be configured.
+
+**References:** Additional Requirements 6, 9, NFR7
+**Source Hints:** Architecture sections 1, 5, 6.
+
+## Epic 4: Profiles and Duplicate Prevention
+
+Deliver account-level memory and controls so users can manage preferences and never receive duplicate titles.
+
+### Story 4.1: User Profile Preferences and Avoid-List Management
+
+As a returning user,
+I want to manage saved preferences and author/content avoid lists,
+So that future recommendations align with my changing tastes and boundaries.
+
+**Acceptance Criteria:**
+
+**Given** an authenticated user opens profile
+**When** viewing preference settings
+**Then** saved preference fields, whitelist/blacklist, and content avoid lists are displayed
+**And** each field supports edit and delete actions.
+
+**Given** profile changes are submitted
+**When** backend validation succeeds
+**Then** updates are persisted and reflected in subsequent recommendation requests
+**And** audit timestamps are updated.
+
+**References:** FR8, FR12, NFR5
+**Source Hints:** PRD sections 8.1, 8.2.
+
+### Story 4.2: Delivered History Tracking and Duplicate Exclusion
+
+As a returning subscriber,
+I want prior deliveries tracked and excluded from future selections,
+So that I do not receive the same title twice.
+
+**Acceptance Criteria:**
+
+**Given** orders are fulfilled
+**When** completion events are recorded
+**Then** delivered history is appended with title, date, and match metadata
+**And** profile history displays the same records.
+
+**Given** a new recommendation is requested
+**When** decision engine ranks candidates
+**Then** titles in delivered history are excluded from eligible pool
+**And** fallback behavior is defined when inventory is constrained.
+
+**References:** FR9, NFR9
+**Source Hints:** PRD sections 8.2, 9; Architecture sections 2-3.
+
+### Story 4.3: Subscription Lifecycle Controls
+
+As a subscriber,
+I want to pause, resume, or cancel my subscription,
+So that I can control recurring deliveries and charges.
+
+**Acceptance Criteria:**
+
+**Given** an active subscription exists
+**When** user chooses pause, resume, or cancel
+**Then** status changes are persisted with effective dates
+**And** next renewal behavior respects the new state.
+
+**Given** subscription status changes
+**When** profile or order history is viewed
+**Then** current plan, cadence, and next charge date are visible
+**And** invalid transitions are blocked with clear errors.
+
+**References:** FR5, FR8
+**Source Hints:** PRD sections 8.2, 9; Architecture sections 2, 8.
+
+## Epic 5: Fulfillment and Pilot Operations
+
+Deliver pilot-ready fulfillment standards and packaging guidance so each blind date kit is assembled consistently.
+
+### Story 5.1: Blind Date Kit BOM and Packaging Metadata
+
+As an operations lead,
+I want each order to carry explicit blind date kit component requirements,
+So that assembly teams can fulfill every kit consistently.
+
+**Acceptance Criteria:**
+
+**Given** an order is created
+**When** fulfillment metadata is generated
+**Then** required kit components include wrapped book, love-note insert, and small gift item
+**And** packaging/reveal flags are included in order payload.
+
+**Given** order details are viewed by operations
+**When** order metadata is rendered
+**Then** kit component checklist fields are visible
+**And** missing component data blocks fulfillment start.
+
+**References:** FR10, NFR7
+**Source Hints:** PRD sections 8.3, 10.
+
+### Story 5.2: Packing Checklist Workflow and QA Gate
+
+As a fulfillment operator,
+I want a per-order packing checklist with QA confirmation,
+So that pilot shipments are assembled correctly every time.
+
+**Acceptance Criteria:**
+
+**Given** an order enters packing state
+**When** operator opens fulfillment checklist
+**Then** each required packing step is presented with completion controls
+**And** order cannot be marked packed until all mandatory steps are complete.
+
+**Given** QA review is required
+**When** checklist is complete
+**Then** a QA confirmation step is recorded with timestamp and user id
+**And** shipping handoff remains blocked until QA passes.
+
+**References:** FR11, NFR7
+**Source Hints:** PRD sections 8.3, 9, 14.
+
+### Story 5.3: Surprise-Safe Shipping Notification Rules
+
+As a gift buyer,
+I want shipment updates that preserve surprise unless I explicitly reveal the title,
+So that recipients keep the blind date experience intact.
+
+**Acceptance Criteria:**
+
+**Given** a shipment notification is generated
+**When** recipient-facing content is composed
+**Then** title metadata is omitted by default
+**And** reveal mode is only used when sender opted in.
+
+**Given** fulfillment notifications are sent
+**When** audit logs are reviewed
+**Then** reveal-mode decisions are traceable per order
+**And** notification templates maintain consistent surprise-safe wording.
+
+**References:** FR10, NFR5
+**Source Hints:** PRD sections 8.3, 13.

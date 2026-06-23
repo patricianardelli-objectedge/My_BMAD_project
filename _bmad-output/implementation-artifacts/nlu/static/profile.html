@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Profile - Blind Date Book</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .profile-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .profile-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .profile-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s;
+        }
+
+        .profile-tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .profile-tab:hover {
+            color: var(--color-primary);
+        }
+
+        .profile-section {
+            display: none;
+        }
+
+        .profile-section.active {
+            display: block;
+        }
+
+        .account-info-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .account-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .account-info-row:last-child {
+            border-bottom: none;
+        }
+
+        .account-info-label {
+            font-weight: 600;
+            color: #333;
+            min-width: 150px;
+        }
+
+        .account-info-value {
+            color: #666;
+            flex: 1;
+        }
+
+        .account-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .preferences-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .preference-section {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .preference-section h3 {
+            margin-top: 0;
+            color: var(--color-primary);
+        }
+
+        .preference-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .preference-chip {
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 12px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .preference-chip.removable {
+            cursor: pointer;
+            background: #e3f2fd;
+            border-color: var(--color-primary);
+        }
+
+        .preference-chip.removable:hover {
+            background: #bbdefb;
+        }
+
+        .preference-chip-remove {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .preference-form {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .preference-form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .preference-form-row input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .preference-form-row button {
+            padding: 10px 16px;
+        }
+
+        .avoid-list-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .avoid-list-table thead {
+            background: #f8f7f5;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .avoid-list-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .avoid-list-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .avoid-list-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .avoid-list-action {
+            color: var(--color-primary);
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .avoid-list-action:hover {
+            text-decoration: underline;
+        }
+
+        .order-history-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .order-history-table thead {
+            background: #f8f7f5;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .order-history-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .order-history-table td {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        .order-history-table tbody tr:hover {
+            background: #fafafa;
+        }
+
+        .order-status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .order-status-badge.delivered {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .order-status-badge.pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .order-status-badge.in-transit {
+            background: #e1f5fe;
+            color: #01579b;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .pagination button.active {
+            background: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .subscription-card {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            color: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+
+        .subscription-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 20px;
+        }
+
+        .subscription-status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-weight: 600;
+            font-size: 12px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+        }
+
+        .subscription-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .subscription-detail {
+            font-size: 14px;
+        }
+
+        .subscription-detail-label {
+            opacity: 0.8;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .subscription-detail-value {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .subscription-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .subscription-actions .btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            color: white;
+            padding: 10px 16px;
+            font-size: 13px;
+        }
+
+        .subscription-actions .btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .logout-btn {
+            margin-top: 20px;
+        }
+
+        .header-return {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .header-return a {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .header-return a:hover {
+            text-decoration: underline;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <a class="logo-link" href="./index.html" aria-label="Blind Date Book home">
+            <img src="logo-blind-date-book.svg" alt="Blind Date Book logo" class="logo-img" />
+        </a>
+        <div class="site-title">
+            <h1>Your Profile</h1>
+            <p class="subtitle">Manage your account and preferences</p>
+        </div>
+        <div class="header-actions">
+            <button class="btn btn-secondary btn-small" id="logout-btn">Logout</button>
+            <a href="./index.html" class="btn btn-primary btn-small" style="text-decoration:none;">Back to Shop</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <!-- Tab Navigation -->
+            <div class="profile-tabs">
+                <button class="profile-tab active" onclick="switchTab('account')">Account</button>
+                <button class="profile-tab" onclick="switchTab('preferences')">Preferences</button>
+                <button class="profile-tab" onclick="switchTab('avoid-list')">Avoid-List</button>
+                <button class="profile-tab" onclick="switchTab('orders')">Order History</button>
+                <button class="profile-tab" onclick="switchTab('subscription')">Subscription</button>
+            </div>
+
+            <!-- Account Section -->
+            <section id="account" class="profile-section active">
+                <div class="account-info-card">
+                    <div class="account-info-row">
+                        <span class="account-info-label">Email</span>
+                        <span class="account-info-value" id="account-email">—</span>
+                    </div>
+                    <div class="account-info-row">
+                        <span class="account-info-label">Name</span>
+                        <span class="account-info-value" id="account-name">—</span>
+                    </div>
+                    <div class="account-info-row">
+                        <span class="account-info-label">Member Since</span>
+                        <span class="account-info-value" id="account-created">—</span>
+                    </div>
+                    <div class="account-actions">
+                        <button class="btn btn-secondary btn-small" id="edit-profile-btn">Edit Profile</button>
+                        <button class="btn btn-secondary btn-small logout-btn" id="logout-btn-footer">Logout</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Preferences Section -->
+            <section id="preferences" class="profile-section">
+                <div class="preferences-grid">
+                    <div class="preference-section">
+                        <h3>Favorite Genres</h3>
+                        <div class="preference-chips" id="genres-display"></div>
+                        <div class="preference-form">
+                            <div class="preference-form-row">
+                                <select id="genre-select" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;">
+                                    <option value="">Select a genre...</option>
+                                    <option value="mystery">Mystery</option>
+                                    <option value="romance">Romance</option>
+                                    <option value="sci-fi">Sci-Fi</option>
+                                    <option value="fantasy">Fantasy</option>
+                                    <option value="thriller">Thriller</option>
+                                    <option value="historical">Historical</option>
+                                </select>
+                                <button class="btn btn-primary btn-small" onclick="addGenre()">Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preference-section">
+                        <h3>Mood Keywords</h3>
+                        <div class="preference-chips" id="moods-display"></div>
+                        <div class="preference-form">
+                            <div class="preference-form-row">
+                                <input type="text" id="mood-input" placeholder="e.g., cozy, adventurous..." />
+                                <button class="btn btn-primary btn-small" onclick="addMood()">Add</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preference-section">
+                        <h3>Age Range (for gifts)</h3>
+                        <div class="preference-form">
+                            <div class="preference-form-row">
+                                <input type="number" id="age-min" placeholder="Min age" min="0" max="120" value="18" style="flex:0.5;" />
+                                <span style="padding:10px;color:#999;">—</span>
+                                <input type="number" id="age-max" placeholder="Max age" min="0" max="120" value="65" style="flex:0.5;" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="preference-section">
+                        <h3>Surprise Level</h3>
+                        <div class="preference-form">
+                            <div style="display:flex;flex-direction:column;gap:8px;">
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                    <input type="radio" name="surprise" value="minimal" /> Minimal (stick to my genres)
+                                </label>
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                    <input type="radio" name="surprise" value="balanced" checked /> Balanced (some new suggestions)
+                                </label>
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                    <input type="radio" name="surprise" value="maximum" /> Maximum (surprise me!)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="grid-column:1/-1;display:flex;gap:12px;">
+                        <button class="btn btn-primary" onclick="savePreferences()">Save Preferences</button>
+                        <button class="btn btn-secondary" onclick="resetPreferences()">Reset</button>
+                    </div>
+                </div>
+                <div id="preferences-message" style="margin-top:16px;display:none;padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;"></div>
+            </section>
+
+            <!-- Avoid-List Section -->
+            <section id="avoid-list" class="profile-section">
+                <div style="margin-bottom:20px;">
+                    <h3 style="margin-top:0;">Books to Avoid</h3>
+                    <p style="color:#999;font-size:14px;">Books you've read or don't want recommended. We'll skip these when suggesting your next pick.</p>
+                </div>
+
+                <div style="background:white;border:1px solid #e0e0e0;border-radius:12px;padding:20px;margin-bottom:20px;">
+                    <div style="display:flex;gap:12px;margin-bottom:20px;">
+                        <input type="text" id="avoid-book-id" placeholder="Book ID (e.g., book-123)" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:8px;" />
+                        <select id="avoid-reason" style="padding:10px;border:1px solid #ddd;border-radius:8px;">
+                            <option value="">Select reason...</option>
+                            <option value="read">Already read</option>
+                            <option value="dislike">Don't like it</option>
+                            <option value="duplicate">Too similar</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="addToAvoidList()">Add to Avoid-List</button>
+                    </div>
+                </div>
+
+                <div id="avoid-list-display">
+                    <table class="avoid-list-table">
+                        <thead>
+                            <tr>
+                                <th>Book ID</th>
+                                <th>Reason</th>
+                                <th>Added</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="avoid-list-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="avoid-list-empty" class="empty-state" style="display:none;">
+                    <div class="empty-state-icon">📚</div>
+                    <p>Your avoid-list is empty. All books are available for recommendation!</p>
+                </div>
+
+                <div id="avoid-list-message" style="margin-top:16px;display:none;padding:12px;background:#e8f5e9;border-radius:8px;color:#2e7d32;"></div>
+            </section>
+
+            <!-- Order History Section -->
+            <section id="orders" class="profile-section">
+                <div style="margin-bottom:20px;">
+                    <h3 style="margin-top:0;">Your Orders</h3>
+                    <p style="color:#999;font-size:14px;">All your past and current orders.</p>
+                </div>
+
+                <div id="order-history-display">
+                    <table class="order-history-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Date</th>
+                                <th>Books</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-history-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                    <div class="pagination" id="order-pagination"></div>
+                </div>
+
+                <div id="order-history-empty" class="empty-state" style="display:none;">
+                    <div class="empty-state-icon">📦</div>
+                    <p>No orders yet. <a href="./index.html" style="color:var(--color-primary);text-decoration:none;">Start shopping</a></p>
+                </div>
+            </section>
+
+            <!-- Subscription Section -->
+            <section id="subscription" class="profile-section">
+                <div id="subscription-display">
+                    <div class="subscription-card">
+                        <div class="subscription-header">
+                            <div>
+                                <h3 style="margin:0;margin-bottom:8px;">Your Subscription</h3>
+                            </div>
+                            <span class="subscription-status-badge" id="sub-status-badge">ACTIVE</span>
+                        </div>
+
+                        <div class="subscription-details">
+                            <div class="subscription-detail">
+                                <div class="subscription-detail-label">Plan</div>
+                                <div class="subscription-detail-value" id="sub-cadence">Monthly</div>
+                            </div>
+                            <div class="subscription-detail">
+                                <div class="subscription-detail-label">Next Shipment</div>
+                                <div class="subscription-detail-value" id="sub-next-date">Jul 23, 2026</div>
+                            </div>
+                        </div>
+
+                        <div class="subscription-actions" id="sub-actions">
+                            <button class="btn" onclick="pauseSubscription()">Pause</button>
+                            <button class="btn" onclick="cancelSubscription()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="subscription-empty" class="empty-state" style="display:none;">
+                    <div class="empty-state-icon">📋</div>
+                    <p>No active subscription. <a href="./index.html" style="color:var(--color-primary);text-decoration:none;">Subscribe now</a></p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Cancel Subscription Modal -->
+    <div class="modal-backdrop" id="cancel-subscription-modal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 style="margin:0;font-size:20px;">Cancel Subscription?</h2>
+                <button type="button" class="modal-close" onclick="document.getElementById('cancel-subscription-modal').style.display='none'">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#666;margin-bottom:16px;">We'd hate to see you go. Could you tell us why you're cancelling?</p>
+                <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:20px;">
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="radio" name="cancel-reason" value="too-expensive" /> Too expensive
+                    </label>
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="radio" name="cancel-reason" value="reading-pace" /> Can't keep up with reading pace
+                    </label>
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="radio" name="cancel-reason" value="disappointed" /> Disappointed with picks
+                    </label>
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                        <input type="radio" name="cancel-reason" value="other" /> Other
+                    </label>
+                </div>
+                <div style="display:flex;gap:12px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="confirmCancelSubscription()">Cancel Subscription</button>
+                    <button class="btn btn-secondary" style="flex:1;" onclick="document.getElementById('cancel-subscription-modal').style.display='none'">Keep Subscription</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== Profile Page Main Functions ==========
+
+        // Initialize page
+        function initProfile() {
+            const token = localStorage.getItem('jwt_token');
+            const userId = localStorage.getItem('user_id');
+            const userEmail = localStorage.getItem('user_email');
+
+            if (!token || !userId) {
+                alert('Please log in first');
+                window.location.href = './index.html';
+                return;
+            }
+
+            // Set user info
+            document.getElementById('account-email').textContent = userEmail;
+            document.getElementById('account-name').textContent = userEmail.split('@')[0];
+            document.getElementById('account-created').textContent = 'Jun 23, 2026'; // Mock
+
+            // Load all data
+            loadPreferences(userId);
+            loadAvoidList(userId);
+            loadOrderHistory(userId);
+            loadSubscription(userId);
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all sections
+            document.querySelectorAll('.profile-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_id');
+            localStorage.removeItem('user_email');
+            window.location.href = './index.html';
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', logout);
+        document.getElementById('logout-btn-footer').addEventListener('click', logout);
+
+        // ========== Preferences Section ==========
+
+        function loadPreferences(userId) {
+            // Mock preferences load
+            const mockPreferences = {
+                preferred_genres: ['mystery', 'romance'],
+                mood_keywords: ['cozy', 'adventurous'],
+                age_min: 18,
+                age_max: 65,
+                surprise_level: 'balanced'
+            };
+
+            // Display genres
+            const genresDiv = document.getElementById('genres-display');
+            genresDiv.innerHTML = mockPreferences.preferred_genres
+                .map(g => `<div class="preference-chip removable" onclick="removeGenre('${g}')">${g} <span class="preference-chip-remove">×</span></div>`)
+                .join('');
+
+            // Display moods
+            const moodsDiv = document.getElementById('moods-display');
+            moodsDiv.innerHTML = mockPreferences.mood_keywords
+                .map(m => `<div class="preference-chip removable" onclick="removeMood('${m}')">${m} <span class="preference-chip-remove">×</span></div>`)
+                .join('');
+
+            // Set form values
+            document.getElementById('age-min').value = mockPreferences.age_min;
+            document.getElementById('age-max').value = mockPreferences.age_max;
+            document.querySelector(`input[name="surprise"][value="${mockPreferences.surprise_level}"]`).checked = true;
+        }
+
+        function addGenre() {
+            const genre = document.getElementById('genre-select').value;
+            if (!genre) return;
+
+            const genresDiv = document.getElementById('genres-display');
+            const existing = Array.from(genresDiv.querySelectorAll('.preference-chip')).map(c => c.textContent.trim().replace('×', ''));
+
+            if (!existing.includes(genre)) {
+                const chip = document.createElement('div');
+                chip.className = 'preference-chip removable';
+                chip.innerHTML = `${genre} <span class="preference-chip-remove">×</span>`;
+                chip.onclick = () => removeGenre(genre);
+                genresDiv.appendChild(chip);
+            }
+
+            document.getElementById('genre-select').value = '';
+        }
+
+        function removeGenre(genre) {
+            const genresDiv = document.getElementById('genres-display');
+            Array.from(genresDiv.querySelectorAll('.preference-chip')).forEach(chip => {
+                if (chip.textContent.includes(genre)) chip.remove();
+            });
+        }
+
+        function addMood() {
+            const mood = document.getElementById('mood-input').value.trim();
+            if (!mood) return;
+
+            const moodsDiv = document.getElementById('moods-display');
+            const chip = document.createElement('div');
+            chip.className = 'preference-chip removable';
+            chip.innerHTML = `${mood} <span class="preference-chip-remove">×</span>`;
+            chip.onclick = () => removeMood(mood);
+            moodsDiv.appendChild(chip);
+
+            document.getElementById('mood-input').value = '';
+        }
+
+        function removeMood(mood) {
+            const moodsDiv = document.getElementById('moods-display');
+            Array.from(moodsDiv.querySelectorAll('.preference-chip')).forEach(chip => {
+                if (chip.textContent.includes(mood)) chip.remove();
+            });
+        }
+
+        function savePreferences() {
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            const genres = Array.from(document.getElementById('genres-display').querySelectorAll('.preference-chip'))
+                .map(c => c.textContent.trim().replace('×', ''));
+            const moods = Array.from(document.getElementById('moods-display').querySelectorAll('.preference-chip'))
+                .map(c => c.textContent.trim().replace('×', ''));
+            const ageMin = parseInt(document.getElementById('age-min').value);
+            const ageMax = parseInt(document.getElementById('age-max').value);
+            const surpriseLevel = document.querySelector('input[name="surprise"]:checked').value;
+
+            if (ageMin > ageMax) {
+                alert('Min age must be less than max age');
+                return;
+            }
+
+            // TODO: POST to /api/users/{userId}/preferences
+            const data = {
+                preferred_genres: genres,
+                mood_keywords: moods,
+                age_min: ageMin,
+                age_max: ageMax,
+                surprise_level: surpriseLevel
+            };
+
+            console.log('Saving preferences:', data);
+
+            // Show success message
+            const msg = document.getElementById('preferences-message');
+            msg.textContent = '✓ Preferences saved successfully!';
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+
+        function resetPreferences() {
+            const userId = localStorage.getItem('user_id');
+            loadPreferences(userId);
+        }
+
+        // ========== Avoid-List Section ==========
+
+        function loadAvoidList(userId) {
+            // Mock avoid-list load
+            const mockAvoidList = [
+                { book_id: 'book-005', reason: 'read', created_at: '2026-06-01' },
+                { book_id: 'book-010', reason: 'dislike', created_at: '2026-06-15' }
+            ];
+
+            const tbody = document.getElementById('avoid-list-tbody');
+            if (mockAvoidList.length === 0) {
+                document.getElementById('avoid-list-display').style.display = 'none';
+                document.getElementById('avoid-list-empty').style.display = 'block';
+            } else {
+                tbody.innerHTML = mockAvoidList
+                    .map(book => `
+                        <tr>
+                            <td><strong>${book.book_id}</strong></td>
+                            <td>${book.reason}</td>
+                            <td>${new Date(book.created_at).toLocaleDateString()}</td>
+                            <td><a class="avoid-list-action" onclick="removeFromAvoidList('${book.book_id}')">Remove</a></td>
+                        </tr>
+                    `)
+                    .join('');
+            }
+        }
+
+        function addToAvoidList() {
+            const bookId = document.getElementById('avoid-book-id').value.trim();
+            const reason = document.getElementById('avoid-reason').value;
+
+            if (!bookId || !reason) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            // TODO: POST to /api/users/{userId}/avoid-list
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            console.log('Adding to avoid-list:', { bookId, reason });
+
+            // Add row to table
+            const tbody = document.getElementById('avoid-list-tbody');
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td><strong>${bookId}</strong></td>
+                <td>${reason}</td>
+                <td>${new Date().toLocaleDateString()}</td>
+                <td><a class="avoid-list-action" onclick="removeFromAvoidList('${bookId}')">Remove</a></td>
+            `;
+
+            if (document.getElementById('avoid-list-empty').style.display !== 'none') {
+                document.getElementById('avoid-list-display').style.display = 'block';
+                document.getElementById('avoid-list-empty').style.display = 'none';
+            }
+
+            // Clear form
+            document.getElementById('avoid-book-id').value = '';
+            document.getElementById('avoid-reason').value = '';
+
+            // Show success
+            const msg = document.getElementById('avoid-list-message');
+            msg.textContent = `✓ Added ${bookId} to avoid-list`;
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        }
+
+        function removeFromAvoidList(bookId) {
+            if (!confirm(`Remove ${bookId} from avoid-list?`)) return;
+
+            // TODO: DELETE /api/users/{userId}/avoid-list/{bookId}
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            console.log('Removing from avoid-list:', bookId);
+
+            // Remove row from table
+            const tbody = document.getElementById('avoid-list-tbody');
+            Array.from(tbody.querySelectorAll('tr')).forEach(row => {
+                if (row.cells[0].textContent === bookId) {
+                    row.remove();
+                }
+            });
+
+            if (tbody.querySelectorAll('tr').length === 0) {
+                document.getElementById('avoid-list-display').style.display = 'none';
+                document.getElementById('avoid-list-empty').style.display = 'block';
+            }
+        }
+
+        // ========== Order History Section ==========
+
+        let currentPage = 0;
+        const ordersPerPage = 10;
+
+        function loadOrderHistory(userId) {
+            // Mock order history load
+            const mockOrders = [
+                {
+                    order_id: 'order-001',
+                    created_at: '2026-06-15',
+                    items: ['Midsummer Manor Mystery', 'Cozy Autumn Reads'],
+                    delivery_status: 'delivered',
+                    total_amount: 49.98
+                },
+                {
+                    order_id: 'order-002',
+                    created_at: '2026-06-08',
+                    items: ['Epic Adventure Tales'],
+                    delivery_status: 'delivered',
+                    total_amount: 24.99
+                }
+            ];
+
+            displayOrders(mockOrders);
+        }
+
+        function displayOrders(orders) {
+            const tbody = document.getElementById('order-history-tbody');
+
+            if (orders.length === 0) {
+                document.getElementById('order-history-display').style.display = 'none';
+                document.getElementById('order-history-empty').style.display = 'block';
+                return;
+            }
+
+            const start = currentPage * ordersPerPage;
+            const end = start + ordersPerPage;
+            const pageOrders = orders.slice(start, end);
+
+            tbody.innerHTML = pageOrders
+                .map(order => `
+                    <tr>
+                        <td><strong>${order.order_id}</strong></td>
+                        <td>${new Date(order.created_at).toLocaleDateString()}</td>
+                        <td>${order.items.length} book(s)</td>
+                        <td><span class="order-status-badge ${order.delivery_status}">${order.delivery_status.toUpperCase()}</span></td>
+                        <td>$${order.total_amount.toFixed(2)}</td>
+                    </tr>
+                `)
+                .join('');
+
+            // Pagination
+            const totalPages = Math.ceil(orders.length / ordersPerPage);
+            const pagination = document.getElementById('order-pagination');
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) {
+                pagination.style.display = 'none';
+                return;
+            }
+
+            for (let i = 0; i < totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                btn.className = i === currentPage ? 'active' : '';
+                btn.onclick = () => {
+                    currentPage = i;
+                    displayOrders(orders);
+                };
+                pagination.appendChild(btn);
+            }
+        }
+
+        // ========== Subscription Section ==========
+
+        function loadSubscription(userId) {
+            // Mock subscription load
+            const mockSubscription = {
+                subscription_id: 'sub-001',
+                status: 'active',
+                cadence: 'monthly',
+                next_billing_date: '2026-07-23'
+            };
+
+            if (mockSubscription.status === 'active') {
+                const card = document.getElementById('subscription-display');
+                document.getElementById('sub-status-badge').textContent = mockSubscription.status.toUpperCase();
+                document.getElementById('sub-cadence').textContent = mockSubscription.cadence.charAt(0).toUpperCase() + mockSubscription.cadence.slice(1);
+                document.getElementById('sub-next-date').textContent = new Date(mockSubscription.next_billing_date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+                document.getElementById('subscription-display').style.display = 'block';
+                document.getElementById('subscription-empty').style.display = 'none';
+            } else {
+                document.getElementById('subscription-display').style.display = 'none';
+                document.getElementById('subscription-empty').style.display = 'block';
+            }
+        }
+
+        function pauseSubscription() {
+            if (!confirm('Pause your subscription? You can resume anytime.')) return;
+
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            // TODO: PATCH /api/subscriptions/{subscriptionId} with action=pause
+
+            console.log('Pausing subscription');
+
+            // Update display
+            document.getElementById('sub-status-badge').textContent = 'PAUSED';
+            document.getElementById('sub-next-date').textContent = 'Paused';
+
+            const actions = document.getElementById('sub-actions');
+            actions.innerHTML = `
+                <button class="btn" onclick="resumeSubscription()">Resume</button>
+                <button class="btn" onclick="cancelSubscription()">Cancel</button>
+            `;
+        }
+
+        function resumeSubscription() {
+            if (!confirm('Resume your subscription?')) return;
+
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            // TODO: PATCH /api/subscriptions/{subscriptionId} with action=resume
+
+            console.log('Resuming subscription');
+
+            // Update display
+            document.getElementById('sub-status-badge').textContent = 'ACTIVE';
+            const nextDate = new Date();
+            nextDate.setDate(nextDate.getDate() + 30);
+            document.getElementById('sub-next-date').textContent = nextDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+            const actions = document.getElementById('sub-actions');
+            actions.innerHTML = `
+                <button class="btn" onclick="pauseSubscription()">Pause</button>
+                <button class="btn" onclick="cancelSubscription()">Cancel</button>
+            `;
+        }
+
+        function cancelSubscription() {
+            document.getElementById('cancel-subscription-modal').style.display = 'flex';
+        }
+
+        function confirmCancelSubscription() {
+            const reason = document.querySelector('input[name="cancel-reason"]:checked').value;
+
+            const userId = localStorage.getItem('user_id');
+            const token = localStorage.getItem('jwt_token');
+
+            // TODO: PATCH /api/subscriptions/{subscriptionId} with action=cancel
+
+            console.log('Cancelling subscription with reason:', reason);
+
+            document.getElementById('cancel-subscription-modal').style.display = 'none';
+            document.getElementById('subscription-display').style.display = 'none';
+            document.getElementById('subscription-empty').style.display = 'block';
+
+            alert('Your subscription has been cancelled. You won\'t be charged again.');
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', initProfile);
+    </script>
+</body>
+</html>
